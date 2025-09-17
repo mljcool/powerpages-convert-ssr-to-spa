@@ -1,0 +1,271 @@
+.ms-Icon {
+    font-size: 20px;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    background: rgb(14, 108, 189);
+    padding: .6rem 20px;
+
+    .ms-Icon {
+        color: white;
+    }
+
+    .ms-menus {
+        cursor: pointer;
+    }
+}
+
+.logo-container {
+    display: flex;
+}
+
+.logo-container>.xrm-attribute-value {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+
+    .siteTitle {
+        white-space: nowrap;
+        font-size: 16px;
+        font-weight: 600;
+        margin-top: 9px;
+        color: white;
+    }
+}
+
+.sub-nav-container {
+    background-color: #f3f2f1;
+    color: #323130;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e1e1e1;
+    position: relative;
+
+    a {
+        cursor: pointer;
+    }
+}
+
+.navItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #323130;
+    min-height: 50px;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    :hover {
+        text-decoration: 'underline';
+    }
+}
+
+.navItem:not(:first-child) {
+    padding: 0 1.8rem;
+}
+
+.navItem:nth-child(1) {
+    padding: 0 1rem;
+    border-right: 1px solid #ddd;
+
+}
+
+.navItem.active {
+    background-color: #ffffff;
+}
+
+.menu {
+    padding: 1.5rem;
+    min-height: 140px;
+}
+
+.sub-menu-items {
+    display: flex;
+    gap: 2.2rem;
+}
+
+
+.sub-menu-items li {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+}
+
+.sub-menu-items li a {
+    color: #0F6CBD;
+    text-decoration: none;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.sub-menu-items li span {
+    color: #707070;
+    font-size: 14px;
+}
+
+@media (min-width: 1024px) and (max-width: 1600px) {
+    .sub-menu-items li span {
+        word-spacing: 0px;
+        letter-spacing: 0px;
+        line-height: 15px;
+    }
+
+    .sub-menu-items {
+        gap: 1.9rem;
+    }
+
+}
+
+.avatar-holder {
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    background: #E0E0E0;
+    min-height: 22px;
+    min-width: 35px;
+    height: 34px;
+    width: 35px;
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.12);
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.14);
+}
+
+.menus-actions {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.ms-menus {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-right: 1px;
+}
+
+.user-fullname {
+    color: white;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.menus-links {
+    cursor: pointer;
+    padding: 0.5rem 2px;
+}
+
+.sign-in {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.login-label {
+    color: white;
+    font-weight: 300;
+}
+
+#menus-displays {
+    position: absolute;
+    right: 15px;
+    top: 2rem;
+    min-width: 100px;
+    z-index: 9;
+}
+
+.menu {
+    position: absolute;
+    top: 49px;
+    left: 0;
+    right: 0;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    background-color: #ffffff;
+    box-shadow: -4px 9px 12px 0px rgb(0 0 0 / 22%);
+    z-index: 5;
+    display: none;
+}
+
+.menu.expanded {
+    max-height: 200px;
+    opacity: 1;
+}
+
+
+
+/* START custom dropdown menu */
+.msdyn-dropdown-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.msdyn-dropdown-menu {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: none;
+    border-radius: 4px;
+    z-index: 9999;
+    padding: 10px;
+}
+
+.msdyn-dropdown-menu.nav-menu {
+    padding: 0;
+}
+
+.msdyn-dropdown-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.msdyn-dropdown-menu ul li {
+    font-size: 14px;
+    font-weight: 400;
+    color: #424242;
+    white-space: nowrap;
+    padding: 10px 9px;
+    cursor: pointer;
+}
+
+.msdyn-dropdown-menu.nav-menu ul li:not(:last-child) {
+    border-bottom: 1px solid rgb(217 217 217 / 60%);
+}
+
+.msdyn-dropdown-menu ul li:hover {
+    background: #f0f0f0;
+}
+
+.msdyn-dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: 10px 15px;
+    background: none !important;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.msdyn-dropdown-btn:hover {
+    background: none !important;
+}

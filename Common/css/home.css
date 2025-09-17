@@ -1,0 +1,304 @@
+.homepage-section-wrapper {
+    margin: 0px;
+    min-height: auto;
+    padding: 10px 1rem;
+    background: #f5f5f5;
+
+    /* override bootstrap style */
+    >.container-fluid {
+        padding-right: 0 !important;
+        padding-left: 0 !important
+    }
+
+    /* force override everything font-family */
+    *:not(.fa) {
+        font-family: 'Segoe UI' !important;
+    }
+
+    .fa-circle-notch:not(.notification-dismiss-notch) {
+        color: #5b5fc7;
+    }
+
+    .notification-dismiss-notch {
+        display: none;
+        color: white;
+        line-height: 2 !important;
+    }
+
+    .workspace-hero-banner {
+        position: relative;
+        background-image: url('/homepage-banner.png');
+        background-size: cover;
+        background-position: center;
+        height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        color: white;
+    }
+
+    .workspace-hero-banner::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(57,
+                32,
+                112,
+                0.5);
+        z-index: 1;
+    }
+
+    .workspace-hero-banner .hero-content h1 {
+        font-size: 32px;
+        font-weight: 600;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+        margin-top: 0;
+        margin-bottom: 0;
+        margin-left: 3rem;
+        color: #fafafa;
+    }
+
+    .workspace-hero-banner .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .txt-workspaces {
+        font-size: 20px;
+        font-weight: 600;
+        color: #323130;
+        margin: 1.5rem 0;
+    }
+
+    .w-tiles {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .w-card {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        align-items: flex-start;
+        justify-content: space-between;
+        background: white;
+        border-radius: 3px;
+        box-shadow: 0px 2px 4px 0px #0000001a;
+        padding: 15px 1.6rem;
+
+        h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #252424;
+            margin: 0;
+        }
+
+        .description {
+            font-weight: 400;
+            font-size: 14px;
+            color: #252424;
+        }
+
+        .data-count {
+            font-weight: 600;
+            font-size: 32px;
+            color: #252424;
+        }
+
+        .status-workspace {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1.9rem;
+        }
+
+        .status {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: start;
+            gap: 0.5rem;
+
+            >a {
+                font-size: 12px;
+                font-weight: 600;
+                color: #5b5fc7;
+                white-space: nowrap;
+                cursor: pointer;
+
+                &:hover {
+                    cursor: pointer;
+                    text-decoration: underline;
+                    color: #302ce1;
+                }
+            }
+        }
+    }
+
+    @media (max-width: 1140px) {
+        .w-tiles {
+            flex-direction: column;
+        }
+
+        .w-card {
+            width: 100%;
+            flex: 1 1 100%;
+        }
+    }
+
+    .vendor-card {
+        background-color: #fff;
+        border-radius: 2px;
+        font-family: 'Segoe UI', sans-serif;
+        box-shadow: 0px 0.3px 0.9px 0px #0000001c;
+        box-shadow: 0px 1.6px 3.6px 0px #00000022;
+        height: fit-content;
+    }
+
+    .vendor-card-header {
+        padding: 0.8rem 1rem;
+        border-bottom: #e5e5e5 1px solid;
+    }
+
+    .vendor-card-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #171717;
+        margin: 0;
+    }
+
+    .vendor-card-body {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+
+    .vendor-card-image img {
+        display: block;
+        width: 192px;
+        margin-bottom: 10px;
+    }
+
+    .vendor-card-links {
+        flex: 1;
+    }
+
+    .link-block {
+        margin-bottom: 0.8rem;
+    }
+
+    .vendor-link {
+        display: block;
+        font-weight: 600;
+        color: #3b3bbf;
+        text-decoration: none;
+        margin-bottom: 2px;
+    }
+
+    .vendor-link:hover {
+        text-decoration: underline;
+    }
+
+    .link-desc {
+        margin: 0;
+        font-size: 0.875rem;
+        color: #555;
+    }
+
+    .workspace-tiles {
+        display: block;
+    }
+
+
+    .essentials-section {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+
+    }
+
+    @media (max-width: 1200px) {
+        .essentials-section {
+            grid-template-columns: 1fr;
+        }
+    }
+
+
+    /* Notification Card */
+    .notification-card {
+        flex-direction: column;
+
+        .vendor-card-image {
+            .notification-banner {
+                width: 155px;
+            }
+        }
+
+        .notification-item-list {
+            width: 100%;
+            max-height: 376px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            &.empty-list{
+                max-height: fit-content;
+                height: fit-content;
+            }
+        }
+
+        .link-block {
+            &.notification-list {
+                border-left: 3px solid #5b5fc7;
+                padding-left: 0.7rem;
+
+                .vendor-link {
+                    color: #000000;
+                    line-height: 13px;
+                    font-weight: 600;
+                    padding-bottom: 6px;
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                .icon-msdyn-icon-check {
+                    margin-right: 5px;
+                }
+
+                .link-desc {
+                    line-height: 13px;
+                    font-weight: 400;
+                    font-size: 12px;
+                }
+
+            }
+
+            &:hover {
+                border-left: 3px solid #b5b7f9;
+                cursor: pointer;
+            }
+        }
+
+        .notification-view-all {
+            display: block;
+            margin-left: 1rem;
+        }
+    }
+}
+
+#notif-dialog-details {
+    #notif-description {
+        border-left: 2px solid #b1b1b1;
+        display: block;
+        padding: 6px 5px;
+        background: #f5f5f5d4;
+        border-radius: 2px;
+    }
+}
+
+
+/* removed oob floating chat agent issue*/
+.pva-floating-style {
+    display: none;
+}

@@ -1,0 +1,60 @@
+  #onboardingModalRequired {
+      .modal-title {
+          color: #242424;
+          font-weight: 600;
+          font-size: 20px;
+      }
+
+      .modal-body {
+          color: #242424;
+          font-weight: 400;
+          font-size: 15px;
+      }
+
+      .img-section {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 100%;
+      }
+
+      .illustrate {
+          width: 200px;
+      }
+
+      .redirect-label {
+          width: 100%;
+          gap: 5px;
+          align-items: center;
+          justify-content: center;
+          font-size: 13px;
+          font-weight: 500;
+      }
+
+      .onboarding-modal-content {
+          padding: 10px 2px;
+      }
+  }
+
+  /* Override alignment/style issues caused by mdb and bootstrap css */
+  .vrm-onboarding-wrapper {
+      [id^="WebFormControl_"]>.row {
+          flex-wrap: nowrap !important;
+
+          #WebFormPanel.order-1 {
+              #EntityFormView {
+                  fieldset {
+                      box-shadow: none;
+                      outline: 1px solid #ebebebeb;
+                  }
+              }
+          }
+      }
+
+      @media (min-width: 992px) {
+          .order-1.col-lg-10 {
+              flex: 1 !important;
+
+          }
+      }
+  }
