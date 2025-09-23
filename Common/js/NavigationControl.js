@@ -172,7 +172,7 @@ function createMobileNavBarBaseOnExistingMenu() {
 		const shapeMenu = scrapeExistingMenuNode.map((_menu) =>`<li>
 			<span class="chev" aria-hidden="true"></span>
 			<a href="#">${_menu.title}</a>
-			<ul class="mobile-list-submenu" role="list">
+			<ul class="mobile-list-submenu" role="list" hidden>
 				${_menu.properties.map((_submenus) => `<li>
 										<span class="chev" aria-hidden="true"></span>
 										<a href="${_submenus.href}">

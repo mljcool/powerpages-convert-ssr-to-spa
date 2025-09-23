@@ -1,0 +1,183 @@
+{% if user %}
+
+{% assign vendor = user.msdyn_globalvendor %} 
+{% if vendor %} 
+  {% assign vendorid = vendor.Id%} 
+  {% assign account = entities.msdyn_globalvendor[vendorid] %} 
+  {% assign companyName = account.msdyn_name %}
+  {% include 'User Portal Access Type' %}
+{% endif %}
+
+
+<script defer src="home.js" type="text/javascript"></script>
+<div class="sectionBlockLayout text-start homepage-section-wrapper">
+  <div class="container-fluid">
+    <div class="home-workspace-wrapper">
+      <div class="workspace-hero-banner">
+        <div class="hero-content">
+          <h1>{{companyName}}</h1>
+        </div>
+      </div>
+
+  {% assign vendor = user.msdyn_globalvendor %}
+  {% if vendor %}
+			 {% assign vendorid = vendor.Id %}
+			 {% assign account = entities.msdyn_globalvendor[vendorid] %}
+			 {% assign prospectValue = 1 %}
+			 {% assign IsNotProspect = account.statuscode.Value %}
+  {% endif %}
+
+    {% if IsNotProspect != prospectValue %}
+      <div class="workspace-section">
+        <h1 class="txt-workspaces">
+          {{ snippets['Home/WorkspacesHeader'] }}
+        </h1>
+      </div>
+
+      <div class="w-tiles">
+        <div class="w-card workspace-tiles">
+          <div class="workspace-title">
+            <h3>{{ snippets['Home/VendorBiddingTitle'] }}</h3>
+            <p class="description">
+              {{ snippets['Home/VendorBiddingDescription'] }}
+            </p>
+          </div>
+          <div class="status-workspace">
+            <div class="status">
+              <a href="/RFQ-list/?activeView=Active">{{ snippets['Home/VendorBiddingActive'] }}</a>              
+              <span class="data-count " id="rfq_active"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="/RFQ-list/?activeView=Invitations">{{ snippets['Home/VendorBiddingNewInvitations'] }}</a>              
+              <span class="data-count " id="rfq_new"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="/RFQ-list/?activeView=InProgress">{{ snippets['Home/VendorBiddingInProgress'] }}</a>             
+              <span class="data-count " id="rfq_inprogress"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="/RFQ-list/?activeView=Submitted">{{ snippets['Home/VendorBiddingSubmitted'] }}</a>             
+              <span class="data-count " id="rfq_submitted"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="RFQ-list/?activeView=Returned">{{ snippets['Home/VendorBiddingReturned'] }}</a>             
+              <span class="data-count " id="rfq_returned"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="/RFQ-list/?activeView=Awarded">{{ snippets['Home/VendorBiddingAwarded'] }}</a>             
+              <span class="data-count " id="rfq_awarded"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="/RFQ-list/?activeView=LostBids">{{ snippets['Home/VendorBiddingLost'] }}</a>             
+              <span class="data-count " id="rfq_lost"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="/RFQ-list/?activeView=Declined">{{ snippets['Home/DeclinedBids'] }}</a>             
+              <span class="data-count " id="rfq_declined"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-card workspace-tiles">
+          <div class="workspace-title">
+            <h3>{{ snippets['Home/POCardTitle'] }}</h3>
+            <p class="description">{{ snippets['Home/POCardDescription'] }}</p>
+          </div>
+          <div class="status-workspace">
+            <div class="status">
+              <a href="/Purchase-order-workspace/?activeView=activePO">{{ snippets['Home/POActive'] }}</a>             
+              <span class="data-count" id="po_activepos">
+                <i class="fa fa-circle-notch loading"></i>
+              </span>
+            </div>
+            <div class="status">
+              <a href="/Purchase-order-workspace/?activeView=forReviewPo">{{ snippets['Home/POForReview'] }}</a>             
+              <span class="data-count " id="po_forreview"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="/Purchase-order-workspace/?activeView=awaitingAction">{{ snippets['Home/POAwaitingCustomerAction'] }}</a>             
+              <span class="data-count" id="po_awaitingaction"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="/Purchase-order-workspace/?activeView=confirmedPo">{{ snippets['Home/POOpenConfirmed'] }}</a>             
+              <span class="data-count" id="po_confirmed"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-card workspace-tiles">
+          <div class="workspace-title">
+            <h3>{{ snippets['Home/InvoiceCardTitle'] }}</h3>
+            <p class="description">{{ snippets['Home/InvoiceCardDescription'] }}</p>
+          </div>
+          <div class="status-workspace">
+            <div class="status">
+              <a href="/invoice-workspace/?activeView=allInv">{{ snippets['Home/InvoiceAllOpen'] }}</a>             
+              <span class="data-count" id="inv_count"><i class="fa fa-circle-notch loading"></i> </span>
+            </div>
+            <div class="status">
+              <a href="/invoice-workspace/?activeView=draftInv">{{ snippets['Home/InvoiceDraft'] }}</a>             
+              <span class="data-count" id="inv_draft"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="/invoice-workspace/?activeView=submittedInv">{{ snippets['Home/InvoiceSubmitted'] }}</a>             
+              <span class="data-count" id="inv_submitted"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="/invoice-workspace/?activeView=approvedInv">{{ snippets['Home/InvoiceApproved'] }}</a>             
+              <span class="data-count" id="inv_unpaid"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="/invoice-workspace/?activeView=paidInv">{{ snippets['Home/InvoicePaid'] }}</a>             
+              <span class="data-count" id="inv_paid"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-card workspace-tiles">
+          <div class="workspace-title">
+            <h3>{{ snippets['Home/ConsignmentInventory'] }}</h3>
+            <p class="description">{{ snippets['Home/ConsignmentDescription'] }}</p>
+          </div>
+          <div class="status-workspace">
+            <div class="status">
+              <a href="/Consignment-Inventory/?activeView=onhand-ci">{{ snippets['Home/ConsignmentOnhandCI'] }}</a>             
+              <span class="data-count" id="ci_count"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="/Consignment-Inventory/?activeView=products-received-ci">{{ snippets['Home/ConsignmentProductReceived'] }}</a>             
+              <span class="data-count" id="ci_receivedpo"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+            <div class="status">
+              <a href="/Consignment-Inventory/?activeView=po-consuming-ci">{{ snippets['Home/ConsignmentPOConsumingCI'] }}</a>             
+              <span class="data-count" id="ci_invoicepo"><i class="fa fa-circle-notch loading"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    {% endif %}
+
+      <div class="workspace-section">
+        <h1 class="txt-workspaces">{{ snippets['Home/Essentials'] }}</h1>
+      </div>
+
+      <div class="essentials-section">
+
+        <!-- Vendor details card -->
+          {% include 'Essentials Vendor details' %}
+
+        <!-- Notification card -->
+          {% include 'Essentials Notifications' %}
+
+        <!-- Help card -->
+          {% include 'Essentials Help' %}
+       
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+  {% include 'Home/Unauthenticated' %}
+{% endif %}

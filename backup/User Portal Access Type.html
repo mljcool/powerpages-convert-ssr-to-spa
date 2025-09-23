@@ -1,0 +1,20 @@
+{% fetchxml portalAccess %}
+    <fetch top="1">
+      <entity name="msdyn_globalvendorportalaccess">
+        <attribute name="msdyn_accesslevel" />
+        <filter type="and">
+          <condition attribute="msdyn_requestinitiator" operator="eq" value="{{user.id}}" />
+          <condition attribute="msdyn_globalvendor" operator="eq" value="{{vendor.Id}}" />
+          <condition attribute="createdon" operator="on-or-before" value="{{ 'today' | date: 'yyyy-MM-dd HH:mm:ss' }}" />
+        </filter>
+      </entity>
+    </fetch>
+    {% endfetchxml %}
+    {% assign PORTAL_ACCESS_CODE_LOCAL = 192350001 %} 
+    {% assign is_global = true %} 
+    {% if portalAccess.results.entities.size > 0 %}
+      {% assign current_access_code = portalAccess.results.entities[0].msdyn_accesslevel.Value %} 
+      {% if current_access_code == PORTAL_ACCESS_CODE_LOCAL %}
+        {% assign is_global = false %}
+      {% endif %}
+    {% endif %}

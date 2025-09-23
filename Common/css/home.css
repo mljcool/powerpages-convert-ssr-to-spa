@@ -304,26 +304,22 @@
     display: none;
 }
 
-/* accessibility  */
+/*responsive and accessibility  */
 @media(max-width: 800px) {
     .home-workspace-wrapper {
-
         .workspace-hero-banner .hero-content h1 {
             font-size: 27px;
             margin-left: 2rem;
         }
-
         .w-card.workspace-tiles {
             .status-workspace {
                 display: flex;
                 flex-wrap: wrap;
-
                 .status {
                     align-items: center;
                 }
             }
         }
-
         .vendor-card-image img {
             width: 150px;
         }
@@ -331,5 +327,4 @@
             font-size: 14px;
         }
     }
-
 }

@@ -1,0 +1,44 @@
+<textarea id="filterInput" type="text" placeholder="Type to filter…"></textarea>
+
+<ul id="myList">
+  <li><a href="/apple">Apple</a></li>
+  <li><a href="/apricot">Apricot</a></li>
+  <li><a href="/banana">Banana</a></li>
+  <li><a href="/blueberry">Blueberry</a></li>
+  <li><a href="/cherry">Cherry</a></li>
+</ul>
+
+
+<div id="test"></div>
+
+<script>
+  // const input = document.getElementById('filterInput');
+  // const listItems = document.querySelectorAll('#myList li');
+
+  // input.addEventListener('input', () => {
+  //   const q = input.value.toLowerCase();
+
+  //   listItems.forEach(li => {
+  //     const link = li.querySelector('a');
+  //     const text = link.textContent.toLowerCase();
+
+  //     // show only if text matches the query
+  //     li.style.display = text.includes(q) ? '' : 'none';
+  //   });
+  // });
+
+function test() {
+  console.log(this)
+}
+test()
+
+const sample = {
+  name: 'Sample Object',
+  logName: function() {
+    console.log(this.name);
+  }
+};
+
+sample.logName(); // Logs: "Sample Object"
+
+</script>

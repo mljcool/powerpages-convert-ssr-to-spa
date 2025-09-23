@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+        <div id="wrapper">
+<link rel="stylesheet" href="/My-profile/my-profile.css">
+<div class="sectionBlockLayout text-start" >
+  <div class="container-fluid">
+    <div class="profile-wrapper">
+      <div class="profile-nav">
+        <a class="back-btn msdyn-btn-regular">
+          <span class="icon-msdyn-back"></span>
+        </a>
+        <h1 class="profile-nav-title">{% include 'snippet' snippet_name:'My Profile' %}</h1>
+      </div> {% entityform name: 'Global Vendor Profile' %}
+    </div>
+  </div>
+</div>
+
+<script>
+$(function () {
+    $('#emailaddress1').prop('readonly', true);
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const configUrl = "/languages.json";
+
+    const installedCultures = [
+        {% for language in page.languages %}"{{ language.code }}"{% unless forloop.last %},{% endunless %}{% endfor %}
+    ];
+
+    const languageUrlMap = {
+        {% for language in page.languages %}"{{ language.code }}":"{{ language.url_substitution }}"{% unless forloop.last %},{% endunless %}{% endfor %}
+    };
+
+    const normalizePrefix = v =>
+        String(v || "").replace(/^\/+|\/+$/g, "").split("/")[0];
+
+    const sanitizeMap = map =>
+        Object.fromEntries(Object.entries(map || {}).map(
+            ([k, v]) => [k, normalizePrefix(v)]
+        ));
+
+    const cleanUrlMap = sanitizeMap(languageUrlMap);
+
+    const installedPrefixes = installedCultures
+        .map(code => cleanUrlMap[code])
+        .filter(Boolean)
+        .sort((a, b) => b.length - a.length);
+
+    const stripCurrentPrefix = pathname => {
+        const lower = pathname.toLowerCase();
+        for (const prefix of installedPrefixes) {
+            const normalized = "/" + prefix.toLowerCase();
+            if (lower === normalized || lower.startsWith(normalized + "/")) {
+                return pathname.slice(normalized.length) || "/";
+            }
+        }
+        return pathname;
+    };
+
+    const forceLanguageRedirect = async () => {
+        const raw = document.getElementById("mspp_userpreferredlcid")?.value || "";
+        const match = raw.match(/\d+/);
+        if (!match) {
+            console.warn("No numeric LCID found:", raw);
+            return;
+        }
+
+        const lcidKey = match[0];
+
+        try {
+            const resp = await fetch(configUrl, { headers: { "Accept": "application/json" } });
+            if (!resp.ok) throw new Error("Failed to load language config: " + resp.status);
+
+            const json = await resp.json();
+            const cfg = json.languages || json;
+
+            const settings = cfg[lcidKey];
+            if (!settings) {
+                console.warn(`LCID ${lcidKey} not found in config.`);
+                return;
+            }
+
+            const selectedCulture = settings.bcp47_locale;
+            if (!installedCultures.includes(selectedCulture)) {
+                console.log(`Culture ${selectedCulture} is not installed on this portal.`);
+                return;
+            }
+
+            const targetPrefix = normalizePrefix(cleanUrlMap[selectedCulture]);
+            const currentPath = window.location.pathname;
+            const relativePath = stripCurrentPrefix(currentPath);
+
+            let redirectPath = targetPrefix
+                ? `/${targetPrefix}${relativePath.startsWith("/") ? "" : "/"}${relativePath}`
+                : relativePath;
+
+            redirectPath = redirectPath.replace(/\/{2,}/g, "/");
+
+            const finalUrl = redirectPath + window.location.search + window.location.hash;
+
+            sessionStorage.clear();
+            localStorage.clear();
+
+            window.location.href = finalUrl;
+        } catch (err) {
+            console.error("Error processing language redirect:", err);
+        }
+    };
+
+    const form = document.getElementById("EntityFormControl_EntityFormView");
+    if (form) {
+        form.addEventListener("onSuccess", () => {
+            setTimeout(() => {
+                forceLanguageRedirect();
+            }, 500);
+        });
+    } else {
+        const btn = document.getElementById("UpdateButton");
+        if (btn) {
+            btn.addEventListener("click", function () {
+                const isValid = typeof entityFormClientValidate === "function"
+                    ? entityFormClientValidate()
+                    : true;
+
+                if (!isValid) return;
+
+                setTimeout(() => {
+                    forceLanguageRedirect();
+                }, 1000);
+            });
+        }
+    }
+});
+</script>
+        </div>
+    </body>
+</html>
+<script>
+
+
+    const htmlStr = document.getElementById("wrapper").innerHTML;
+    console.log(encodeHtml(htmlStr))
+
+	function encodeHtml(str) {
+		return str.replace(/\r?\n/g, '\\r\\n'); // convert real linebreaks to literal \r\n
+	}
+</script>

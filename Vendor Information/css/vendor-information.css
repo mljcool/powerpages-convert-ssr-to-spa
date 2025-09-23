@@ -1,0 +1,448 @@
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1400px !important;
+    }
+}
+
+.common-workspace-wrapper {
+    padding: 1.5rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+    width: 100%;
+}
+
+.common-workspace-wrapper .action-header-workspace {
+    display: flex;
+    align-items: center;
+    padding: 0px 8px;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: var(--msdyn-boxShadow);
+    border-radius: 4px;
+    justify-content: space-between;
+}
+
+.action-header-workspace .group-action {
+    display: flex;
+    gap: 5px;
+}
+
+.msdyn-btn-regular {
+    margin: 6px 0;
+    
+    .txt-regular{
+        padding-top: 4px;
+    }
+}
+
+.actions {
+    display: none;
+}
+
+.dialog-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 2rem 1rem;
+}
+
+.custom {
+    --dialog-width: 210px;
+    --dialog-height: fit-content;
+}
+
+.custom-unsave {
+    --dialog-width: fit-content;
+    --dialog-height: fit-content;
+}
+
+.saving-loading-label {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#defaultDialog {
+    position: relative;
+    z-index: 999 !important;
+}
+
+.common-workspace-wrapper {
+    padding: 1.5rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+    width: 100%;
+}
+
+.common-workspace-wrapper .action-header-workspace {
+    display: flex;
+    align-items: center;
+    padding: 0px 8px;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: var(--msdyn-boxShadow);
+    border-radius: 4px;
+    justify-content: space-between;
+}
+
+.action-header-workspace .group-action {
+    display: flex;
+    gap: 5px;
+}
+
+.common-header-section {
+    padding: 2rem 1.6rem;
+    border-radius: 4px;
+    box-shadow: var(--msdyn-boxShadow);
+    background: white;
+
+    >h4 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #242424;
+    }
+}
+
+.icon-msdyn-disk-save {
+    >svg {
+        fill: #D492D8;
+    }
+}
+
+.msdyn-btn-regular {
+    margin: 6px 0;
+}
+
+.actions {
+    display: none;
+}
+
+.dialog-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 2rem 1rem;
+}
+
+.custom {
+    --dialog-width: 210px;
+    --dialog-height: fit-content;
+}
+
+.saving-loading-label {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#defaultDialog {
+    position: relative;
+    z-index: 999 !important;
+}
+
+:root {
+    --bs-table-striped-bg: #fff;
+}
+
+.vendor-information-section {
+
+    background: #fafafa;
+
+    div[data-name="general_information_tab"] {
+        background: #fafafa;
+    }
+
+    .message.alert-success {
+        display: block;
+        background: white;
+        box-shadow: var(--msdyn-boxShadow);
+        border-left: 9px solid #b7d8b7;
+    }
+
+    div.message.success {
+        padding: 1rem 1.5rem !important;
+    }
+
+    .message.alert-success .btn-close {
+        background: none;
+    }
+
+    .message.alert-success .btn-close span {
+        color: rgba(0, 0, 0, 0.818);
+        font-size: 20px;
+        font-weight: 600;
+
+    }
+}
+
+.global-vendor-form {
+    padding: 0;
+
+    dropdown-menu.show {
+        z-index: 999;
+    }
+
+    fieldset {
+        box-shadow: var(--msdyn-boxShadow);
+        border-radius: 3px;
+        background: white;
+        padding: 20px 30px;
+        margin-top: .5rem;
+    }
+
+    fieldset {
+        table[data-name="general_information_tab_section_general_information"] {
+            border-spacing: 0 14px;
+            border-collapse: separate;
+        }
+
+        table[data-name="general_information_tab_section_contacts"] {
+
+            .view-grid {
+                table tbody tr:first-child td {
+                    padding: 17px 0.4rem !important;
+                }
+            }
+        }
+
+        table[data-name="general_information_tab_section_address"] {
+            border-spacing: 0 0px;
+            border-collapse: separate;
+        }
+
+        /* Override input fields */
+        .control input,
+        select {
+            position: relative;
+            flex-grow: 1;
+            border-radius: 0;
+            background-color: #ffffff !important;
+            transition: border-bottom-color 0.2sease-in-out;
+            outline: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .control input[type="text"]:not([readonly]),
+        input[type="email"]:not([readonly]),
+        input[type="url"]:not([readonly]),
+        select:not(:disabled) {
+            border: none;
+            border: 1px solid #D1D1D1 !important;
+        }
+		
+        .control input[type="text"]:not([readonly]),
+        input[type="email"]:not([readonly]),
+        select {
+            box-shadow: 1px 5px 0px -4px rgb(0 0 0 / 35%);
+        }
+
+        .control:not(:has(> .input-group)) input,
+        select {
+            width: 83%;
+        }
+
+        .control .input-group:not(.float-start) {
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #D1D1D1;
+            border-radius: 4px;
+            width: 90%;
+
+            .clearlookupfield {
+                display: none !important;
+            }
+        }
+    }
+
+    .table {
+        >tbody>tr {
+            background: white !important;
+        }
+    }
+
+    fieldset {
+        padding: 25px 30px;
+
+        .form-subgrid-heading {
+            display: none;
+        }
+
+        .fa.fa-edit {
+            display: none;
+        }
+
+        .fa-ban {
+            display: none;
+        }
+
+        .dropdown-item {
+            padding: 8px 10px;
+        }
+
+        .dropdown-item:hover {
+            padding: 8px 10px !important;
+        }
+
+        .view-grid {
+            min-height: 100px;
+
+            .fa-chevron-down::before {
+                position: relative;
+                content: '...' !important;
+                font-weight: 400;
+                font-size: 20px;
+                top: -4px;
+            }
+			
+            .fa.fa-arrow-up {
+                display: none;
+            }
+
+            .fa-arrow-down {
+                display: none;
+            }
+
+            table tbody>tr:nth-of-type(odd) {
+                background-color: white !important;
+                padding: 5px 0.4rem !important;
+            }
+
+            table tbody>tr {
+                background-color: white !important;
+            }
+
+            table tbody>tr * {
+                background: white !important;
+            }
+
+            table thead {
+                border: 1px solid #fff;
+                border-bottom: 1px solid #EEEEEE;
+            }
+
+            table thead>tr>th * {
+                color: #201F1E !important;
+                text-decoration: none;
+                white-space: nowrap;
+                font-size: 15px;
+                font-weight: 600;
+                padding: 10px 0px;
+                display: block;
+
+            }
+
+            .table>:not(caption)>*>* {
+                padding: 5px 0.4rem !important;
+            }
+
+            table td {
+                border-bottom: 1px solid #EEEEEE;
+                vertical-align: middle;
+                font-size: 14px;
+                font-weight: 400;
+            }
+
+            table>tbody tr td {
+                border: 1px solid rgba(209, 209, 209, 1);
+            }
+
+            table>thead tr {
+                border-bottom: 1px solid rgba(209, 209, 209, 1);
+            }
+        }
+
+    }
+
+    .section-title h3 {
+        font-size: 19px;
+        font-weight: 600;
+        color: #333333;
+        margin-bottom: 1.2rem;
+    }
+
+    .field-label {
+        font-size: 12px;
+        font-weight: 500;
+        color: #242424fa;
+        margin-bottom: 4px;
+    }
+
+    fieldset[aria-label="Global Vendor Setup"] {
+
+        .field-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #242424fa;
+            margin-bottom: 4px;
+        }
+
+    }
+
+    /* Action Header */
+
+    .grid-actions {
+        border-bottom: 1px solid #fff;
+    }
+
+    .grid-actions .create-action {
+        background: white;
+        border: #D1D1D1 1px solid;
+        border-radius: 4px;
+        display: flex;
+        gap: 9px;
+        padding: 9px 16px;
+        align-items: self-end;
+    }
+
+    .create-action>.txt-regular-action {
+        color: #242424;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+}
+
+/* Fluent modal */
+
+#warning-unsave {
+    z-index: 999;
+    position: relative;
+}
+
+.modal-fluent-content {
+    padding: 2rem 1rem;
+
+    .header-fluent-action {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    h3 {
+        white-space: nowrap;
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    label {
+        white-space: nowrap;
+        font-size: 14px;
+        font-weight: 400;
+    }
+
+    .close-unsave-warning {
+        cursor: pointer;
+    }
+
+}
+
+.modal-fluent-footer {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: end;
+    padding: 1rem;
+}

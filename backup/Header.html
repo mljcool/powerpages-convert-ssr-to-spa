@@ -1,0 +1,242 @@
+{% include 'JS Snippets Library' %} 
+{% assign defaultlang = settings['LanguageLocale/Code'] | default: 'en-us' %} 
+{% assign homeurl = website.adx_partialurl %}
+
+<!-- Account/Login/LogOff -->
+{% if user %}
+<nav class="nav-container {% if primary_nav.editable %}xrm-entity xrm-editable-adx_weblinkset{% endif %}" data-weblinks-maxdepth="2" aria-label="{{ resx.Main_Navigation | default: 'Main Navigation' }}">
+    <div class="logo-container xrm-editable-html xrm-attribute" data-languagecontext="English">
+        <div class="xrm-attribute-value">
+            <h1 class="siteTitle custom-sitetitle">{{ snippets['Site name'] }}</h1>
+        </div>
+    </div>
+    <div class="menus-actions">
+        <a class="ms-menus" href="/notifications-overview" aria-label="Notifications">
+            <i class="icon-msdyn-bell" aria-hidden="true"></i>
+        </a>
+        <div class="msdyn-dropdown-container">
+            <button class="msdyn-dropdown-btn">
+                <div class="avatar-holder">
+                    <i class="icon-msdyn-user-avatar" aria-hidden="true"></i>
+                </div>
+                <span class="user-fullname">{{ user.fullname }}</span>
+            </button>
+            <div class="msdyn-dropdown-menu nav-menu">
+                <ul>
+                    <li>
+                        <a href="/My-Profile">{{ snippets['My Profile'] }}</a>
+                    </li>
+                    <li>
+                        <a href="/Account/Login/LogOff">{{ snippets['Header/Logout'] }}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+{% assign vendor = user.msdyn_globalvendor %} 
+{% if vendor %} 
+	{% assign vendorid = vendor.Id %} 
+	{% assign account = entities.msdyn_globalvendor[vendorid] %} 
+	{% assign prospectValue = 1 %} 
+	{% assign IsNotProspect = account.statuscode.Value %} 
+    {% include 'User Portal Access Type' %}
+{% endif %}
+
+<div class="sub-nav-container">
+    <a class="navItem" href="/">
+        <i class="icon-msdyn-home" aria-hidden="true"></i>
+    </a>
+    {% if IsNotProspect != prospectValue %}
+    <!-- Vendor Bidding -->
+    <a class="navItem" tabindex="0">{{ snippets['Header/VendorBidding'] }}</a>
+    <div class="menu">
+        <ul class="sub-menu-items">
+            <li>
+                <a href="/RFQ-list/?activeView=Active">{{ snippets['Header/ActiveBids'] }}</a>
+                <span>{{ snippets['Header/AllBidsYouCanReply'] }}</span>
+            </li>
+            <li>
+                <a href="/RFQ-list/?activeView=Invitations">{{ snippets['Header/NewBidInvitations'] }}</a>
+                <span>{{ snippets['Header/ActiveBidsBuyerSupplied'] }}</span>
+            </li>
+            <li>
+                <a href="/RFQ-list/?activeView=InProgress">{{ snippets['Header/BidsInProgress'] }}</a>
+                <span>{{ snippets['Header/BidsStarterReply'] }}</span>
+            </li>
+            <li>
+                <a href="/RFQ-list/?activeView=Submitted">{{ snippets['Header/BidsSubmitted'] }}</a>
+                <span>{{ snippets['Header/BidsHaveSubmitted'] }}</span>
+            </li>
+            <li>
+                <a href="/RFQ-list/?activeView=Returned">{{ snippets['Header/ReturnBids'] }}</a>
+                <span>{{ snippets['Header/BidsBuyerRequesting'] }}</span>
+            </li>
+            <li>
+                <a href="/RFQ-list/?activeView=Awarded">{{ snippets['Header/AwarededBids'] }}</a>
+                <span>{{ snippets['Header/ClosedBidsWon'] }}</span>
+            </li>
+            <li>
+                <a href="/RFQ-list/?activeView=LostBids">{{ snippets['Header/LostBids'] }}</a>
+                <span>{{ snippets['Header/ClosedBidsLost'] }}</span>
+            </li>
+            <li>
+                <a href="/RFQ-list/?activeView=LostBids">{{ snippets['Header/DeclinedBids'] }}</a>
+                <span>{{ snippets['Header/BidsThatHaveBeenDeclined'] }}</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Purchase Orders -->
+    <a class="navItem" tabindex="0">{{ snippets['Header/PurchaseOrders'] }}</a>
+    <div class="menu">
+        <ul class="sub-menu-items">
+            <li>
+                <a href="/Purchase-order-workspace/?activeView=activePO">{{ snippets['Header/ActivePOs'] }}</a>
+                <span>{{ snippets['Header/AllOpenPurchaseOrders'] }}</span>
+            </li>
+            <li>
+                <a href="/Purchase-order-workspace/?activeView=forReviewPo">{{ snippets['Header/ForReview'] }}</a>
+                <span>{{ snippets['Header/AllPurchaseOrdersVR'] }}</span>
+            </li>
+            <li>
+                <a href="/Purchase-order-workspace/?activeView=awaitingAction">{{ snippets['Header/AwaitingCustomerAction'] }}</a>
+                <span>{{ snippets['Header/AllPurchaseOrdersPendingCA'] }}</span>
+            </li>
+            <li>
+                <a href="/Purchase-order-workspace/?activeView=confirmedPo">{{ snippets['Header/OpenConfirmedPO'] }}</a>
+                <span>{{ snippets['Header/AllConfirmedPONotYetFulfilledVendor'] }}</span>
+            </li>
+            <li>
+                <a href="/all-confirmed-po">{{ snippets['Header/AllConfirmedPO'] }}</a>
+                <span>{{ snippets['Header/AllConfirmedPORegardFulfillStatus'] }}</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Invoices -->
+    <a class="navItem" tabindex="0">{{ snippets['Header/Invoices'] }}</a>
+    <div class="menu">
+        <ul class="sub-menu-items">
+            <li>
+                <a href="/invoice-workspace/?activeView=allInv">{{ snippets['Header/AllOpenInvoices'] }}</a>
+                <span>{{ snippets['Header/ShowsAllActiveInvoices'] }}</span>
+            </li>
+            <li>
+                <a href="/invoice-workspace/?activeView=draftInv">{{ snippets['Header/Draft'] }}</a>
+                <span>{{ snippets['Header/InvoicesSavedNotSubmitted'] }}</span>
+            </li>
+            <li>
+                <a href="/invoice-workspace/?activeView=submittedInv">{{ snippets['Header/Submitted'] }}</a>
+                <span>{{ snippets['Header/InvoicesSubmittedPendingApproval'] }}</span>
+            </li>
+            <li>
+                <a href="/invoice-workspace/?activeView=approvedInv">{{ snippets['Header/Approved'] }}</a>
+                <span>{{ snippets['Header/InvoicesApprovedAwaitingPayment'] }}</span>
+            </li>
+            <li>
+                <a href="/invoice-workspace/?activeView=paidInv">{{ snippets['Header/Paid'] }}</a>
+                <span>{{ snippets['Header/InvoicesFullyPaidClosed'] }}</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Consignment Inventory -->
+    <a class="navItem" tabindex="0">{{ snippets['Header/ConsignmentInventory'] }}</a>
+    <div class="menu">
+        <ul class="sub-menu-items">
+            <li>
+                <a href="/Consignment-Inventory/?activeView=onhand-ci">{{ snippets['Header/OnHandCI'] }}</a>
+                <span>{{ snippets['Header/AllOnHandCI'] }}</span>
+            </li>
+            <li>
+                <a href="/Consignment-Inventory/?activeView=products-received-ci">{{ snippets['Header/ProductsReceivedCI'] }}</a>
+                <span>{{ snippets['Header/AllProductsReceivedCI'] }}</span>
+            </li>
+            <li>
+                <a href="/Consignment-Inventory/?activeView=consuming-ci">{{ snippets['Header/POConsumingCI'] }}</a>
+                <span>{{ snippets['Header/AllPOConsumingCI'] }}</span>
+            </li>
+        </ul>
+    </div>
+
+    {% endif %}
+
+    <!-- Setup -->
+    <a class="navItem" tabindex="0">{{ snippets['Header/Setup'] }}</a>
+    <div class="menu">
+        <ul class="sub-menu-items">
+           {% if is_global %}
+            <li>
+                <a href="/vendor-information">{{ snippets['Header/GlobalVendorSetup'] }}</a>
+                <span>{{ snippets['Header/DefineContactInfoProdCatETC'] }}</span>
+            </li>
+           {% endif %}
+            {% if IsNotProspect != prospectValue %}
+            <li>
+                <a href="/Setup">{{ snippets['Header/ForBuyerLegalEntities'] }}</a>
+                <span>{{ snippets['Header/SpecifyInfoUsedSellToBuyerCompanies'] }}</span>
+            </li>
+            {% endif %}
+            {% if is_global %}
+            <li>
+                <a href="/User-Access-Control">{{ snippets['Header/Users'] }}</a>
+                <span>{{ snippets['Header/RequestNewUsersRolesBuyerLE'] }}</span>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+{% else %}
+
+<!-- Logged Out View -->
+<nav class="nav-container {% if primary_nav.editable %}xrm-entity xrm-editable-adx_weblinkset{% endif %}" data-weblinks-maxdepth="2" aria-label="{{ resx.Main_Navigation | default: 'Main Navigation' }}">
+
+    <div class="logo-container xrm-editable-html xrm-attribute" data-languagecontext="English">
+        <div class="xrm-attribute-value">
+            <h1 class="siteTitle custom-sitetitle">{{ snippets['Site name'] }}</h1>
+        </div>
+    </div>
+    <div class="menus-actions">
+        <span class="ms-menus sign-in" title="Login">
+      <a href="/signIn">
+        <i class="ms-Icon ms-Icon ms-Icon--FollowUser" aria-hidden="true"></i>
+      </a>
+    </span>
+    </div>
+</nav>
+
+{% endif %}
+
+<!-- Responsive Navbar Script -->
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function () {
+	// IE-specific fix (legacy)
+	if (navigator.userAgent.includes("Trident")) {
+	  const searchElement = document.getElementById("search");
+	  if (searchElement) {
+		searchElement.setAttribute("href", "");
+	  }
+	}
+
+	setNavbarHeight();
+  });
+
+  function setNavbarHeight() {
+	const navbar = document.getElementById("navbar");
+	if (navbar) {
+	  const offset = 140;
+	  const windowHeight = window.innerHeight - offset;
+	  navbar.style.maxHeight = `${windowHeight}px`;
+	}
+  }
+
+  // Debounced resize handler
+  let resizeTimeout;
+  window.addEventListener("resize", () => {
+	clearTimeout(resizeTimeout);
+	resizeTimeout = setTimeout(setNavbarHeight, 150);
+  });
+</script>
