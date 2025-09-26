@@ -1,0 +1,364 @@
+/* =================== OLD PO WORKSPACE: BASE STYLES =================== */
+
+.form-control {
+    font-weight: 600;
+    color: #171717;
+    background-color: gainsboro;
+    border: none !important;
+}
+
+.input-group-btn {
+    background-color: gainsboro;
+    border-radius: 0 2px 2px 0;
+}
+
+button[aria-label="Search Results"] {
+    height: 35px;
+}
+
+table {
+    border: 1px solid #dee2e6;
+}
+
+table thead {
+    border: 1px solid #fdfdfd;
+}
+
+table thead > tr > th * {
+    color: #000 !important;
+    text-decoration: none;
+}
+
+.table th {
+    font-weight: 600;
+    font-size: 14px;
+    color: #323130;
+    padding-left: 10px;
+}
+
+table td {
+    border: 1px solid #E1DFDD;
+    padding: 3px 12px !important;
+    font-weight: 400;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+/* Table border and cell padding */
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 10px;
+}
+
+.btn {
+    width: 100%;
+}
+
+/* =================== BADGES =================== */
+
+.badges {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    min-width: 80px;
+}
+
+/* Specific styles for each status */
+.approved {
+    background-color: #ebebeb;
+}
+.edited, .unanswered, .forreview {
+    background-color: #FFDDB3;
+    color: #242424;
+}
+.submitted, .accepted, .acceptedwithchanges, .rejected, .awaitingcustomeraction {
+    background-color: #ebebeb;
+    color: #242424;
+}
+.openconfirmedpo {
+    background-color: #EEACB2;
+    color: #242424;
+}
+
+/* =================== LABELS =================== */
+
+.label-bidtype {
+    display: inline-block;
+    font-size: 14px;
+    text-align: center;
+    padding: 8px 10px;
+    border-radius: 3px;
+    min-width: 80px;
+    border: 1px solid #dededf;
+}
+
+/* =================== HEADERS & LINKS =================== */
+
+th a:not(.btn) {
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.grid-actions {
+    border-bottom: 0 ;
+}
+
+a:not(.btn) {
+    text-decoration: none;
+    /* font-size: 25px; */
+}
+
+/* =================== PO WORKSPACE WRAPPER =================== */
+
+.rfq-workspace-wrapper {
+    font-family: "Segoe UI" !important;
+    padding: 0.6rem 0rem;
+    gap: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.rfq-workspace-wrapper .header-workspace {
+    display: flex;
+    align-items: center;
+    padding: 2.2rem 1.5rem;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 2px 4px;
+    border-radius: 4px;
+}
+
+.rfq-workspace-wrapper .body-workspace {
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 2px 4px;
+    border-radius: 4px;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.header-workspace h1 {
+    color: #242424;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* =================== CUSTOM DROPDOWN MENU =================== */
+
+.msdyn-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.msdyn-dropdown-button {
+    background: none;
+    border: none;
+    color: #115EA3;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.msdyn-dropdown-button::after {
+    font-size: 12px;
+}
+
+.msdyn-dropdown-menu {
+    display: none;
+    position: absolute;
+    background: white;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 2px 4px;
+    border-radius: 8px;
+    padding: 10px 0;
+    min-width: 180px;
+    z-index: 1000;
+}
+
+.msdyn-dropdown-menu a {
+    display: block;
+    padding: 10px 16px;
+    text-decoration: none;
+    color: #424242;
+    transition: background 0.2s;
+}
+.msdyn-dropdown-menu a:hover {
+    background: #F3F3F3;
+}
+
+/* =================== STATUS TYPE CARD =================== */
+
+.workspace-status-types {
+    display: flex;
+    gap: 2rem;
+    margin-top: 3.5rem;
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 3px;
+    min-width: 216px;
+    gap: .9rem;
+    padding: .5rem .5rem 1.5rem;
+    border: 1px solid #D1D1D1;
+    cursor: pointer;
+}
+.stat-card:hover {
+    box-shadow: 0px 0px 14px 3px rgba(0, 0, 0, 0.3);
+}
+.stat-card .stat-title {
+    font-family: "Segoe UI";
+    font-size: 14px;
+    font-weight: 400;
+    color: #242424;
+}
+.stat-card .stat-count {
+    font-family: "Segoe UI";
+    font-size: 40px;
+    font-weight: 600;
+    color: #0F6CBD;
+}
+.stat-card.active {
+    border: 1px solid #0F6CBD;
+}
+.stat-card.active .stat-title {
+    font-weight: 600;
+}
+
+.header-workspace h1,
+.viewTitle h5 {
+    color: #242424;
+    font-size: 20px;
+    font-weight: 600 !important;
+    font-family: "Segoe UI";
+}
+.header-workspace h1 { 
+    margin-bottom: 0;
+}
+
+/* =================== TOOLBAR & INPUTS =================== */
+
+button.btn.btn-default.btn-md.aria-exp {
+    padding: .5rem 1.5rem .5rem 0;
+}
+button.btn.btn-default.btn-md.aria-exp:active,
+button.btn.btn-default.btn-md.aria-exp:hover {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.viewTitle {
+    margin-left: 12px;
+}
+.grid-actions {
+    margin-bottom: 9px;
+}
+
+input.query.form-control {
+    font-weight: 700;
+    color: #707070;
+    background-color: #F5F5F5;
+    height: 35px;
+}
+
+button[aria-label="Search Results"] {
+    background-color: #F5F5F5;
+}
+
+.float-end.toolbar-actions {
+    max-width: 200px;
+    margin-right: 30px;
+}
+
+.dropdown-menu>li>a:focus,
+.dropdown-menu>li>a:hover {
+    padding: 10px;
+}
+.dropdown-menu>li>a {
+    padding: 10px;
+}
+
+/* =================== MODAL STYLING =================== */
+
+#acceptModal,
+#rejectModal,
+#submitModal {
+    font-family: "Segoe UI";
+    .tab-content-header-details {
+        box-shadow: none;
+    }
+    fieldset.tab-content-header-details {
+        padding: 0;
+        margin-top: -47px;
+    }
+    .modal-title {
+        font-family: "Segoe UI";
+        font-size: 20px;
+        font-weight: 600;
+    }
+    .modal-body {
+        padding: 0 1rem;
+    }
+    .modal-header {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        border-bottom: none;
+        color: #242424;
+        font-family: "Segoe UI";
+        font-weight: 400;
+        font-size: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+    }
+    .modal-content {
+        border-radius: 14px;
+    }
+    .modal-footer {
+        border-top: none;
+    }
+    .modal-submit .modal-cancel {
+        width: 168px;
+    }
+}
+
+.dialog-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 2rem 1rem;
+}
+
+.custom {
+    --dialog-width: 210px;
+    --dialog-height: fit-content;
+}
+
+.saving-loading-label {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#MessagePanel {
+    display: none;
+}
+
+.dialog-loading:focus-visible,
+.processingDialog:focus-visible {
+    outline: none;
+}

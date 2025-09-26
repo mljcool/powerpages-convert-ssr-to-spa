@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.45/moment-timezone-with-data.min.js"></script>
+	</head>
+	<body>
+		<div id="showDate"></div>
+		<div id="showDate2"></div>
+	</body>
+</html>
+
+<script>
+	var now = moment('08/13/2025 8:00 AM')
+		.tz('Europe/Berlin')
+		.format('dd-MM-yyyy HH:mm A');
+	document.getElementById('showDate').textContent = now;
+
+	const forceToISOFormat = (dateValue, { bcp47Locale = '', options = {} }) => {
+		const isoDate = new Date(dateValue).toISOString();
+		const timeOpt = {
+			timeZone: 'Etc/GMT+12',
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			hour12: false,
+			...options,
+		};
+		const fmt = new Intl.DateTimeFormat(bcp47Locale, timeOpt);
+		const localISOTime = fmt.format(new Date(isoDate));
+		return localISOTime;
+	};
+	document.getElementById('showDate2').textContent = forceToISOFormat(
+		'08/13/2025 8:00 AM',
+		{ bcp47Locale: 'nl-NL', options: { hour12: true } }
+	);
+
+
+	const d = moment("22-09-2025 01:26", "DD-MM-YYYY HH:mm", true);
+	const dateLog = d.format("YYYY-MM-DD HH:mm:ss")
+	console.log('d', dateLog);
+	console.log(new Date(dateLog))
+</script>
