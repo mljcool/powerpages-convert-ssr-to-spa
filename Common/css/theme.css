@@ -19,6 +19,7 @@
     --a11y-color-bg-readonly: #fff;
     --a11y-anim-fast: 120ms ease-in-out;
     --a11y-color-bg-btn: #f3f3f3;
+    --a11y-color-text-blend-contrast: #222222;
 }
 
 #WebFormPanel,
@@ -64,6 +65,15 @@
         transition: border-bottom-color var(--a11y-anim-fast),
             outline var(--a11y-anim-fast);
     }
+     
+    /* === Checkbox divcontrol */
+     div.control span.checkbox input[type=checkbox]:focus {
+        outline: 1px solid var(--a11y-color-ring) !important;
+        border-radius: 2px;
+        outline-offset: var(--a11y-ring-offset);
+        transition: border-bottom-color var(--a11y-anim-fast),
+            outline var(--a11y-anim-fast);
+    }
 
     /* === Selects  */
     .control>select.form-control:focus {
@@ -83,7 +93,7 @@
 }
 
 /* === Buttons  */
-.btn.btn-primary:focus {
+.btn.btn-primary:focus,.msdyn-btn-regular:focus {
     outline: var(--a11y-ring-size) solid var(--a11y-color-ring-alt) !important;
     outline-offset: var(--a11y-ring-offset);
 }
@@ -95,6 +105,7 @@
 .modal-dialog button.form-close:focus {
     outline: var(--a11y-ring-size) solid var(--a11y-color-ring-alt) !important;
     outline-offset: var(--a11y-ring-offset);
+    forced-color-adjust: auto;
 }
 
 /* === Mobile modal sizing  */
@@ -200,3 +211,22 @@
 
 /* end landing Page */
 
+/* Adjust behivior for theme/system high-contrast settings */
+@media (forced-colors: active) {
+    a:focus,
+    a:hover,
+    button:focus,
+    button:hover,
+    .msdyn-btn-regular:hover,
+    .msdyn-btn-regular:focus,
+    .btn.btn-primary:hover,
+    .btn:hover > .txt-regular-action,
+    .btn:focus > .txt-regular-action,
+    [role="button"]:focus,
+    [role="button"]:hover {
+        forced-color-adjust: none;
+        background: var(--a11y-color-bg-btn);
+        color: var(--a11y-color-text-blend-contrast);
+        outline: 1px solid ButtonText;
+    }
+}

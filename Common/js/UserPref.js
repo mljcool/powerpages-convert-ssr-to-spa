@@ -12,7 +12,7 @@ const userData = {
 		lcid: 1033,
 		language_name: 'English – United States',
 		bcp47_locale: 'en-US',
-		date_format: 'MM/dd/yyyy',
+		date_format: 'MM-dd-yyyy',
 		time_format: 'hh:mm tt',
 		thousand_separator: ',',
 		decimal_separator: '.',

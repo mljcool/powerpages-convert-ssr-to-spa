@@ -1,0 +1,568 @@
+#UpdateButton {
+    display: none;
+}
+
+input {
+    flex: 1 !important;
+}
+
+*[class^="fui-"] {
+    .control {
+        input {
+            border-bottom: none;
+        }
+
+        input:focus {
+            border-color: transparent !important;
+            border-bottom-color: transparent !important;
+        }
+
+        textarea {
+            all: unset !important;
+        }
+    }
+
+}
+
+input,
+textarea {
+    background-color: transparent !important;
+}
+
+.loading-cursor {
+    cursor: progress;
+}
+
+.card {
+    border: .3px solid rgba(0, 0, 0, .125);
+    border-radius: 4px;
+}
+
+.card h2 {
+    font-weight: 600;
+}
+
+.card .card-body {
+    padding: 20px 28px;
+}
+
+.nav-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0;
+}
+
+.nav-card-item {
+    display: flex;
+    padding: 0 20px;
+    font-size: 17px;
+    align-self: start;
+    height: 45px;
+    align-items: center;
+}
+
+.nav-card-item:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, .125);
+}
+
+fieldset[aria-label="Purchase Order"],
+fieldset[aria-label="Purchase Order Response"],
+fieldset[aria-label="General"],
+fieldset[aria-label="Virtual Entity Testing (To Be Hidden)"] {
+    display: none;
+}
+
+.po-header {
+    display: flex;
+    flex-direction: row;
+    padding: 20px 20px;
+    justify-content: space-between;
+}
+
+.po-header-left {
+    font-size: 40px;
+    padding: 16px;
+}
+
+.po-header-right {
+    display: flex;
+    align-items: center;
+}
+
+.po-right-item {
+    margin: 10px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.po-right-item-title {
+    font-size: 22px;
+}
+
+.po-right-item-sub {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3f3e3e;
+}
+
+.po-right-item::after {
+    border-right: 1px solid rgba(0, 0, 0, .125);
+}
+
+.badges {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    min-width: 80px;
+    background-color: #ffddb3;
+    color: #3f3e3e;
+}
+
+.nav-card-item a {
+    text-decoration: none !important;
+    color: black;
+}
+
+.nav-card-item a:hover {
+    text-decoration: none !important;
+}
+
+.nav-card-item i {}
+
+.nav-card-item #back {
+    font-size: 25px;
+    color: #0f6cbd;
+}
+
+.invoice-workspace-wrapper {
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.invoice-workspace-wrapper .action-header-workspace {
+    display: flex;
+    align-items: center;
+    padding: 0px 8px;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 2px 4px;
+    border-radius: 4px;
+    justify-content: space-between;
+}
+
+.action-header-workspace .group-action {
+    display: flex;
+    gap: 5px;
+}
+
+.msdyn-btn-regular {
+    margin: 6px 0;
+}
+
+.header-workspace span {
+    color: #242424;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.invoice-workspace-wrapper .body-workspace {
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 2px 4px;
+    border-radius: 4px;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.pcf-message.forcom {
+    white-space: normal;
+    line-height: 2rem;
+    text-align: center;
+    font-size: 21px;
+}
+
+.data-segmentation .data-badge-state {
+    font-family: "Segoe UI";
+    background-color: #ffddb3 !important;
+    color: #242424;
+}
+
+.data-segmentation .data-badge-state.waiting-action {
+    font-family: "Segoe UI";
+    background-color: #ebebeb !important;
+    color: #242424;
+}
+
+.data-segmentation .data-badge-state.openconfirmedpo {
+    font-family: "Segoe UI";
+    background-color: #EEACB2 !important;
+    color: #242424;
+}
+
+.tab-title {
+    display: none;
+}
+
+fieldset.tab-content-header-details {
+    padding: 1rem;
+}
+
+.tab-content-header-details.po-header-info {
+    padding: 1rem;
+    min-height: fit-content;
+    margin-top: 6px;
+}
+
+label {
+    font-size: 10px;
+}
+
+.data-information {
+    margin: 0.5rem 14px;
+}
+
+.invoice-workspace-wrapper {
+
+    .section-title h3,
+    .data-supplier-id,
+    .data-supplier-name {
+        font-family: "Segoe UI";
+    }
+
+    .data-supplier-id {
+        font-size: 20px;
+    }
+
+    .section-title h3 {
+        font-size: 20px;
+        color: #242424;
+    }
+
+    .table-info.form-subgrid-heading>.field-label {
+        font-size: 20px !important;
+        color: #242424;
+        font-family: "Segoe UI";
+    }
+
+    fieldset[aria-label="Lines"] h3 {
+        margin-left: 18px;
+    }
+
+    .table-info label {
+        color: #616161;
+    }
+
+    .data-supplier-name {
+        font-weight: 600;
+    }
+
+    .tab-information-section {
+        top: 0;
+    }
+
+    .data-segmentation .data-count {
+        font-weight: 600;
+        font-family: "Segoe UI";
+    }
+
+    .data-segmentation .data-label {
+        font-weight: 700;
+        font-family: "Segoe UI";
+    }
+
+    .txt-regular {
+        color: #242424;
+        font-size: 12px;
+        font-weight: 400;
+    }
+
+    .data-supplier-status .data-segmentation {
+        gap: 0;
+        padding: 0 1.8rem;
+    }
+
+    fieldset.tab-content-header-details {
+        padding: .8rem;
+    }
+}
+
+
+.form-wrapper {
+    margin-top: -20px;
+}
+
+.table-info label {
+    font-family: "Segoe UI";
+    color: #616161;
+    font-weight: 400;
+    font-size: 10px;
+}
+
+.crmEntityFormView .section-title {
+    margin-bottom: 10px;
+}
+
+fieldset[arial-label="Communication"] legend.section-title {
+    margin: 15px;
+}
+
+fieldset[arial-label="Communication"] {
+    padding: 0;
+}
+
+a {
+    color: black;
+    white-space: nowrap;
+}
+
+/* Modal styling */
+
+#acceptModal,
+#rejectModal,
+#submitModal {
+    font-family: "Segoe UI";
+
+    .tab-content-header-details {
+        box-shadow: none;
+    }
+
+    fieldset.tab-content-header-details {
+        padding: 0;
+        margin-top: -47px;
+    }
+
+    .modal-title {
+        font-family: "Segoe UI";
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .modal-body {
+        padding: 0 1rem;
+    }
+
+    .modal-header {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        border-bottom: none;
+        color: #242424;
+        font-family: "Segoe UI";
+        font-weight: 400;
+        font-size: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+    }
+
+    .modal-content {
+        border-radius: 14px;
+    }
+
+
+    .modal-footer {
+        border-top: none;
+    }
+
+    .modal-submit .modal-cancel {
+        width: 168px;
+    }
+}
+
+.dialog-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 2rem 1rem;
+}
+
+.custom {
+    --dialog-width: 210px;
+    --dialog-height: fit-content;
+}
+
+.saving-loading-label {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#MessagePanel {
+    display: none;
+}
+
+
+.dialog-loading:focus-visible,
+.processingDialog:focus-visible {
+    outline: none;
+}
+
+
+/* Banner information */
+.instructions,
+.hidden-components {
+    display: none;
+}
+
+.banner-information {
+    border-radius: 4px;
+    border: 1px solid #d1d1d1;
+    background: #f5f5f5;
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    padding: .4rem .5rem;
+}
+
+.banner-message,
+.bold-label {
+    font-size: 12px;
+    color: #242424;
+    margin-bottom: 2px;
+}
+
+.bold-label {
+    font-weight: 600;
+}
+
+.banner-message {
+    font-weight: 400;
+}
+
+.tooltip {
+    position: relative;
+    display: flow-root;
+    cursor: pointer;
+}
+
+.modal-fluent-content {
+    padding: 2rem 1rem;
+
+    .header-fluent-action {
+        display: flex;
+        flex-direction: row;
+        //justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    h3 {
+        white-space: nowrap;
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    label {
+        white-space: nowrap;
+        font-size: 14px;
+        font-weight: 400;
+    }
+
+    .close-unsave-warning {
+        cursor: pointer;
+    }
+
+}
+
+.modal-fluent-footer {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: end;
+    padding: 1rem;
+}
+
+.dialog-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 2rem 1rem;
+}
+
+.custom {
+    --dialog-width: 210px;
+    --dialog-height: fit-content;
+}
+
+.custom-unsave {
+    --dialog-width: revert-layer;
+    --dialog-height: fit-content;
+    z-index: 1000 !important;
+    position: relative !important;
+}
+
+.saving-loading-label {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 220px !important;
+    background-color: #fff;
+    color: black;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -150px;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 2px 4px;
+    font-size: 12px;
+    font-weight: normal;
+    font-family: Segoe UI', ' Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, ' Helvetica Neue', sans-serif;
+
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.invoice-workspace-wrapper {
+    .lookup.form-control-cell {
+        >.control {
+            .input-group {
+                border: 1px solid #949494;
+                border-radius: 3px;
+                padding: 0;
+                >input.lookup.text {
+                    position: relative;
+                    margin-top: 2px;
+                    border: none;
+                }
+
+                button.btn.clearlookupfield {
+                    border-right: 1px solid #949494;
+                    border-left: 1px solid #949494;
+                    border-radius: 0px !important;
+                }
+                button.btn.launchentitylookup {
+                    border-radius: 0px !important;
+                }
+            }
+        }
+    }
+}

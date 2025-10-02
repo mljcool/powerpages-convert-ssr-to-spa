@@ -1805,9 +1805,7 @@
 					dateSelectors,
 					moneySelectors,
 				};
-				msdyn.LocaleService.setNodes(nodes)
-					.formatMoney()
-					.formatDates();
+				msdyn.LocaleService.setNodes(nodes).formatMoney().formatDates();
 				msdyn.LocaleService.debugNodes(false).withNodesAndValues();
 				msdyn.LocaleService.debugNodes().plainLog();
 
@@ -1854,3 +1852,12 @@
 		</script>
 	</body>
 </html>
+<script>
+	$('.entity-grid.address-subgrid').on('loaded', function () {
+		$(document).on('click', 'a.details-link', function (e) {
+			e.preventDefault();
+			console.log('Details link clicked:', this);
+		});
+	});
+</script>
+
