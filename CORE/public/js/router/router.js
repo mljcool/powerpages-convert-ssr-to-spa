@@ -193,6 +193,9 @@ function testPages() {
         {
             pathURL: "/Vendor-information",
         },
+        {
+            pathURL: "/My-profile",
+        },
     ];
     const urlOnly = testPages.map((item) => item.pathURL);
     fetchMultiple(urlOnly).then((_pages) => {
@@ -202,7 +205,6 @@ function testPages() {
                 htmlPage: page,
             });
         });
-        console.log("storeTestPages", storeTestPages);
     });
     // testPages.forEach(async (links) => {
     // 	const pageToRender = await fetchHtmlPage(route);
@@ -257,13 +259,10 @@ document.addEventListener("DOMContentLoaded", function () {
         _submenus.addEventListener("click", function (e) {
             const anchor = e.target.closest("a");
             if (!anchor || !this.contains(anchor)) return;
-            // Stop normal navigation
             e.preventDefault();
 
-            // Now you can handle it however you want
             console.log("Clicked link:", anchor.href);
             const anchorTag = new URL(anchor.href);
-            const decodeURL = decodeURI(anchorTag.pathname);
             const fullPath = anchorTag.pathname + anchor.search;
             console.log("anchorTag", anchorTag);
             if (storeTestPages.length && fullPath !== currentURL) {
@@ -276,5 +275,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 currentURL = fullPath;
             }
         });
+    });
+
+    const myProfileLink = document.querySelector('a[href="/My-profile"]');
+    myProfileLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        const link = "/My-profile";
+        if (storeTestPages.length && link !== currentURL) {
+            const searchPage = storeTestPages.find(
+                (_link) => _link.route === link
+            );
+            pageRenderer(searchPage.htmlPage);
+            fullPath = "/My-profile";
+        }
     });
 });

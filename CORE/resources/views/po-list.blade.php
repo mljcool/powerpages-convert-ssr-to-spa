@@ -1,7 +1,8 @@
 @extends('layouts.app')
-
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/purchase-order.css') }}" />
+<script type="text/javascript" src="{{ asset('js/purchase-order-list.js') }}"></script>
+
 		<div
 			class="row sectionBlockLayout text-start"
 			style="min-height: auto; padding: 15px 1rem"
@@ -5987,3 +5988,4 @@
 			</div>
 		</div>
 @endsection
+

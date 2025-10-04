@@ -246,7 +246,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			if (!anchor || !this.contains(anchor)) return;
 			// Stop normal navigation
 			e.preventDefault();
-
 			// Now you can handle it however you want
 			console.log('Clicked link:', anchor.href);
 			const anchorTag = new URL(anchor.href);

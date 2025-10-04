@@ -19,3 +19,8 @@ Route::get('/Purchase-order-workspace', function () {
 Route::get('/Vendor-information', function () {
     return view('vendor-information');
 });
+
+
+Route::get('/My-profile', function () {
+    return view('myprofile');
+});

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Epiremental</title>
+		<link href="https://fonts.cdnfonts.com/css/selawik" rel="stylesheet" />
+		<link href="../Common/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="../Common/css/font-awesome.BootstrapV5.bundle.css" rel="stylesheet" />
+		<link href="../Common/css/preform.BootstrapV5.bundle.css" rel="stylesheet" />
+		<style>
+			.container {
+				padding: 4rem 1rem;
+			}
+			.actions {
+				margin-top: 2rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+			<div id="ValidationSummaryEntityFormView" class="validation-summary alert alert-error alert-danger alert-block" role="alert" style="display: none"></div>
+			<div class="control">
+				<select name="ctl00$ContentContainer$WebFormControl_b5dbd6134025f0118c4e6045bd08c661$EntityFormView$msdyn_contact" id="msdyn_contact" class="lookup form-control dirty" required="" aria-invalid="false">
+					<option value="" label="Select" aria-label="Select" class="dropdown-item">Select</option>
+					<option value="c146ac3c-ac8c-f011-aa44-000d3a97bba6" class="dropdown-item">Jaime Gonzalez</option>
+					<option value="9160501c-3f95-f011-b41c-0022480af83b" class="dropdown-item">Maria Vox</option>
+					<option value="fce25f69-6b94-f011-b41b-7ced8d6df1f3" class="dropdown-item">Pedro Silva</option></select
+				><input name="ctl00$ContentContainer$WebFormControl_b5dbd6134025f0118c4e6045bd08c661$EntityFormView$msdyn_contact_entityname" type="hidden" id="msdyn_contact_entityname" value="contact" />
+			</div>
+
+			<div class="actions">
+				<div class="col-md-6 clearfix">
+					<div role="group" class="btn-group entity-action-button">
+						<input type="button" name="ctl00$ContentContainer$$NextButton" value="Next" onclick="submit()" id="NextButton" class="btn btn-primary button next submit-btn" nonactionlinkbutton="true" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+
+<script>
+	const message = `⚠️ Cannot proceed: an email address is required. The selected contact has no email.`;
+	const msdyn = {
+		Portal: {
+			Snippets: {
+				validateUserEmail: message,
+			},
+		},
+	};
+	document.addEventListener('DOMContentLoaded', function () {
+		let noEmail = false;
+		const msdyn_contact = document.getElementById('msdyn_contact');
+		const nextBtn = document.getElementById('NextButton');
+		const validator = {
+			selectedContact: async (id) => {
+				try {
+					const url = `/notification-api/?id=${id}`;
+					const res = await new Promise((resolve) => {
+						  setTimeout(() => {
+							resolve({ emailaddress1: "testemail"});
+						  },1500)
+					});
+					return await res;
+				} catch (error) {
+					console.error('Failed to validate contact:', error);
+					return null;
+				}
+			},
+			message: (visible = '') => {
+				const messageContainer = document.getElementById('ValidationSummaryEntityFormView');
+				const message = msdyn.Portal.Snippets.validateUserEmail;
+				messageContainer.textContent = message;
+				messageContainer.style.display = visible;
+			},
+		};
+		msdyn_contact.addEventListener('change', async function (e) {
+			const id = e.target.value;
+			const { emailaddress1 } = await validator.selectedContact(id);
+			noEmail = !emailaddress1;
+			console.log({ emailaddress1, noEmail });
+			validator.message('none');
+		});
+		nextBtn.addEventListener('click',function (e) {
+				if (!noEmail) return;
+				e.preventDefault();
+				e.stopImmediatePropagation();
+				console.log('stopImmediatePropagation');
+				validator.message('');
+				msdyn_contact.focus();
+			},true);
+	});
+
+	function submit() {
+		console.log('COOL....');
+	}
+</script>

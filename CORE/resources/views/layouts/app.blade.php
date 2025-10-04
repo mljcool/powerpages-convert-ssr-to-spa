@@ -85,7 +85,7 @@
 					<div class="msdyn-dropdown-menu nav-menu">
 						<ul>
 							<li>
-								<a href="/My-Profile">My Profile</a>
+								<a href="/My-profile">My Profile</a>
 							</li>
 							<li>
 								<a href="/Account/Login/LogOff">Logout</a>
@@ -325,5 +325,25 @@
 			}
 		});
 	});
+
+	function setTableView(tableId) {
+		alert(tableId);
+		const viewTitles = {
+			activePO: 'Active POs',
+			forReviewPo: 'For review',
+			awaitingAction: 'Awaiting customer action',
+			confirmedPo: 'Open confirmed PO',
+		};
+
+		const objKey = viewTitles[tableId];
+		const objKeyTable = Object.keys(viewTitles);
+		objKeyTable.forEach((id) => {
+			if (tableId === id) {
+				$('#' + tableId).css('display', 'block');
+			} else {
+				$('#' + id).css('display', 'none');
+			}
+		});
+	}
 </script>
 

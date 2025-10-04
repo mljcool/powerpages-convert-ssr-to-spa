@@ -1,0 +1,368 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+span:not(.fa),
+li,
+input,
+select,
+label,
+a,
+.modal-title {
+    font-family: 'Segoe UI', 'Segoe UI Web (West European)' !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+input::placeholder {
+    color: rgba(245, 245, 245, 0) !important;
+}
+
+input::-webkit-input-placeholder {
+    color: rgba(245, 245, 245, 0) !important;
+}
+
+.control select,
+.control textarea {
+    border: none;
+    border-bottom: 2px solid #f0efef;
+    border-radius: 0;
+    background-color: #f5f5f5;
+    transition: border-bottom-color 0.2s ease-in-out;
+    outline: none;
+    border-radius: 4px;
+}
+
+.control textarea:focus {
+    border-color: transparent !important;
+    border-bottom-color: #0078d4 !important;
+}
+
+fieldset {
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 2px 4px;
+    border-radius: 4px;
+    background: white;
+    padding: 16px !important;
+    margin-bottom: 2rem;
+}
+
+/* Hide Security Information */
+.nav-profile {
+    display: none;
+}
+
+/* Banner information */
+
+.banner-information {
+    border-radius: 4px;
+    border: 1px solid #d1d1d1;
+    background: #f5f5f5;
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    padding: .4rem .5rem;
+    margin-bottom: 2.625rem;
+}
+
+.banner-message,
+.bold-label {
+    font-size: 12px;
+    color: #242424;
+    margin-bottom: 2px;
+}
+
+.bold-label {
+    font-weight: 600;
+}
+
+.banner-message {
+    font-weight: 400;
+}
+
+.close-banner {
+    cursor: pointer;
+    margin-left: auto;
+}
+
+fieldset h2 span,
+fieldset h3 span,
+fieldset legend h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #424242;
+}
+
+table label,
+.control input,
+.form-check label span {
+    font-size: 14px;
+    font-weight: 400;
+    color: #424242;
+}
+
+legend {
+    border-bottom: none;
+}
+
+.page-copy {
+    padding: 15px 6px;
+}
+
+.crmEntityFormView .actions {
+    border-top: none;
+    margin: 15px 0;
+    padding: 0;
+}
+
+.crmEntityFormView .tab {
+    margin-bottom: 0;
+}
+
+.tab-column>div fieldset {
+    margin: 0;
+
+    /* Override Form fields control */
+    .form-control-cell {
+        position: relative;
+    }
+
+    .form-control-cell>.control {
+        position: relative;
+        max-width: 78%;
+        left: 11.5rem;
+    }
+
+    .crmEntityFormView .cell {
+        padding: 0 5px 14px !important;
+    }
+
+    .form-control-cell>.table-info,
+    .picklist-cell>.table-info {
+        position: absolute;
+        left: 0;
+        top: 8px;
+        width: 17%;
+        /* Prevents labels from being too long */
+    }
+
+    .picklist-cell {
+        position: relative;
+
+        .control {
+            position: relative;
+            left: 11.5rem;
+        }
+    }
+
+    tr td:nth-child(2) {
+        .table-info {
+            position: absolute;
+            left: 10px;
+            top: 8px;
+            width: 17%;
+        }
+
+    }
+
+    tr td:nth-child(1) {
+        .control {
+            max-width: 75%;
+        }
+    }
+
+
+    .form-control-cell>.table-info>.field-label {
+        min-width: 175px;
+        max-width: 180px;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+
+    @media (max-width: 1700px) {
+        .form-control-cell>.control {
+            max-width: 70%;
+        }
+    }
+}
+
+.profile-wrapper {
+    .profile-nav {
+        display: flex;
+        margin-bottom: 30px;
+        align-items: center;
+        padding: 16px !important;
+        box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.14) 0px 2px 4px;
+        border-radius: 4px;
+        background: white;
+    }
+
+    h1.profile-nav-title {
+        font-family: "Segoe UI" !important;
+        font-weight: 600;
+        font-size: 20px;
+        color: #242424;
+        margin-block-end: 0;
+        margin-left: 16px;
+    }
+}
+
+.control select {
+    width: 100%;
+    font-size: 14px;
+    font-weight: 400;
+    color: #424242;
+    font-family: 'Segoe UI', 'Segoe UI Web (West European)', sans-serif;
+    border: none;
+    border-bottom: 2px solid #f0efef;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px 14px;
+    transition: border-bottom-color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+form .control select:focus {
+    border-bottom: 2px solid #0078d4 !important;
+}
+
+.sectionBlockLayout {
+    padding: 15px 1rem;
+}
+
+/* start My Profile */
+@media (max-width: 1400px) {
+    .profile-wrapper {
+        #EntityFormPanel {
+
+            input,
+            select {
+                max-width: 90%;
+            }
+        }
+    }
+}
+
+@media (max-width: 1400px) {
+    .profile-wrapper {
+        #EntityFormPanel {
+
+            input,
+            select {
+                max-width: 75%;
+            }
+        }
+    }
+}
+
+@media (max-width: 1000px) {
+    .sectionBlockLayout {
+        padding: .5rem;
+
+        .container-fluid {
+            padding: 4px;
+        }
+    }
+
+    .profile-wrapper {
+        #EntityFormPanel {
+            fieldset>.section {
+                tbody tr>td {
+                    display: grid;
+                    grid-template-columns: 60% 100%;
+                    align-items: self-start;
+                    position: relative;
+
+                    div.table-info {
+                        width: fit-content;
+                    }
+
+                    div.control {
+                        max-width: 100%;
+
+                        input,
+                        select {
+                            max-width: 100%;
+                        }
+                    }
+                }
+
+                tr td:nth-child(2) {
+                    .table-info {
+                        left: 0;
+                        top: 8px;
+                    }
+
+                }
+
+                .cell.zero-cell {
+                    display: none;
+                }
+            }
+
+            .clearfix:after {
+                display: none;
+            }
+        }
+
+        .actions>input[type="button"] {
+            margin-top: 1rem;
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .profile-wrapper {
+        #EntityFormPanel {
+            fieldset>.section {
+                tbody tr>td {
+                    display: inline-block;
+                    position: relative;
+
+                    div.table-info {
+                        width: fit-content;
+                    }
+
+                    div.control {
+                        max-width: 62%;
+
+                        input,
+                        select {
+                            max-width: 100%;
+                            width: 250px;
+                            position: relative;
+                            right: 3rem;
+                        }
+                    }
+                }
+            }
+
+            .form-control-cell>.table-info>.field-label {
+                font-size: smaller;
+                min-width: 60px;
+            }
+
+            #salutation_ControlView {
+                width: auto;
+                right: 2.8rem;
+                position: relative;
+            }
+
+            div[data-id="TextAsDropdown_container"] {
+                min-width: 95%;
+                .fui-Dropdown {
+                    min-width: 100% !important;
+                    width: fit-content !important;
+                }
+            }
+        }
+    }
+}
+
+/* end My Profile */
