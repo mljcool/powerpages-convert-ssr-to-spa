@@ -31,28 +31,28 @@ const activePages = [
         pathURL: "/RFQ-list/",
         srcLink: "js/rfq-list.js",
         cssLink: "css/rfq-list.css",
-        scrLinkIsActive: false,
+        preserveActiveCss: false,
     },
     {
         pageId: "po",
         pathURL: "/Purchase-order-workspace/",
         srcLink: "js/purchase-order-list.js",
         cssLink: "css/purchase-order.css",
-        scrLinkIsActive: false,
+        preserveActiveCss: false,
     },
     {
         pageId: "vi",
         pathURL: "/Vendor-information",
         srcLink: "js/purchase-order-list.js",
         cssLink: "css/vendor-information.css",
-        scrLinkIsActive: false,
+        preserveActiveCss: false,
     },
     {
         pageId: "mp",
         pathURL: "/My-profile",
         srcLink: "js/purchase-order-list.js",
         cssLink: "css/rfq-list.js",
-        scrLinkIsActive: false,
+        preserveActiveCss: false,
     },
 ];
 
@@ -74,10 +74,33 @@ function removeSrcLinks(doc, names = []) {
     });
 }
 
+function removeHtmlComments(doc) {
+    const walker = document.createTreeWalker(
+        doc,
+        NodeFilter.SHOW_COMMENT,
+        null,
+        false
+    );
+    const toRemove = [];
+    while (walker.nextNode()) {
+        toRemove.push(walker.currentNode);
+    }
+    toRemove.forEach((comment) => comment.remove());
+}
+
 function unwrapTags(doc, selector) {
     doc.querySelectorAll(selector).forEach((el) => {
         el.replaceWith(...el.childNodes); // keeps children, removes the tag
     });
+}
+
+function removeActiveExistingJSscript(scriptLink = "") {
+    const existingScript = [...document.scripts].find(
+        (s) => s.src && s.src.endsWith(scriptLink)
+    );
+    if (existingScript) {
+        existingScript.remove();
+    }
 }
 
 function insertHTMLWithDSD(container, html) {
@@ -121,6 +144,7 @@ async function fetchHtmlPage(url) {
         const htmlText = await response.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlText, "text/html");
+        removeHtmlComments(doc);
         doc.querySelectorAll("meta").forEach((el) => el.remove());
         doc.querySelectorAll("nav").forEach((el) => el.remove());
         doc.querySelectorAll("div.sub-nav-container").forEach((el) =>
@@ -237,30 +261,22 @@ document.addEventListener("DOMContentLoaded", async function () {
             const fullPath = pathname + anchor.search;
 
             if (storeTestPages.length && fullPath !== currentURL) {
+                const basePath = origin + "/";
                 const { htmlPage, srcLink, cssLink, pageId } =
                     storeTestPages.find((_link) => _link.pathURL === pathname);
                 const currentTargetPage = activePages.find(
                     (p) => p.pageId === pageId
                 );
-
+                removeActiveExistingJSscript(srcLink);
                 pageRenderer(htmlPage);
-                if (!currentTargetPage.scrLinkIsActive) {
-                    const jsScript = await loadScriptByPage(
-                        pageId,
-                        srcLink,
-                        origin + "/"
-                    );
-                    const cssScript = await loadCSSByPage(
-                        pageId,
-                        cssLink,
-                        origin + "/"
-                    );
-                    await Promise.all([jsScript, cssScript]);
-                    currentTargetPage.scrLinkIsActive = true;
+                if (!currentTargetPage.preserveActiveCss) {
+                    await loadCSSByPage(pageId, cssLink, basePath);
+                    currentTargetPage.preserveActiveCss = true;
                 }
-                currentURL = fullPath;
+                await loadScriptByPage(pageId, srcLink, basePath);
                 dismissNavigation();
                 window.history.pushState({}, "", anchor.href);
+                currentURL = fullPath;
                 console.log("activePages", activePages);
             }
         });
