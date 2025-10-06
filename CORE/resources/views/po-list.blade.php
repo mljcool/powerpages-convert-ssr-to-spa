@@ -3,16 +3,12 @@
 <link rel="stylesheet" href="{{ asset('css/purchase-order.css') }}" />
 <script type="text/javascript" src="{{ asset('js/purchase-order-list.js') }}"></script>
 
-		<div
-			class="row sectionBlockLayout text-start"
-			style="min-height: auto; padding: 15px 1rem"
-		>
+		<div class="row sectionBlockLayout text-start" style="min-height: auto; padding: 15px 1rem">
 			<div class="container-fluid" style="display: flex; flex-wrap: wrap">
 				<div class="rfq-workspace-wrapper">
 					<div class="header-workspace">
-						<h1 class="txt-workspace">Purchase orders</h1>
+						<h1 class="txt-workspace po-header-title">Purchase orders</h1>
 					</div>
-
 					<div class="body-workspace">
 						<!-- Filter Dropdown -->
 						<div class="general-filter hidden-links">

@@ -1,6 +1,63 @@
+const storeTestPages = [];
+const removeDupeSrcLinks = [
+    "home.css",
+    "theme.css",
+    "MDBmin.css",
+    "Navigation.css",
+    "font-awesome.BootstrapV5.bundle.css",
+    "office-ui-fabric-core/11.0.0/css/fabric.min.css",
+    "fonts.cdnfonts.com/css/selawik",
+    "aos@2.3.1/dist/aos.css",
+    "font-awesome.BootstrapV5.bundle.css",
+    "preform.BootstrapV5.bundle.css",
+    "bootstrap.min.css",
+    "MsdynIcons.js",
+    "Utility.js",
+    "@fluentui/web-components",
+    "NavigationControl.js",
+    "aos@2.3.1/dist/aos.js",
+    "app.BootstrapV5.bundle.js",
+    "bootstrap.BootstrapV5.bundle.js",
+    "purchase-order-list.js",
+    "rfq-list.js",
+    "router.js",
+    "rfq-list.css",
+    "purchase-order.css",
+    "onboarding-redirect-modal.css",
+];
+const activePages = [
+    {
+        pageId: "rfq",
+        pathURL: "/RFQ-list/",
+        srcLink: "js/rfq-list.js",
+        cssLink: "css/rfq-list.css",
+        scrLinkIsActive: false,
+    },
+    {
+        pageId: "po",
+        pathURL: "/Purchase-order-workspace/",
+        srcLink: "js/purchase-order-list.js",
+        cssLink: "css/purchase-order.css",
+        scrLinkIsActive: false,
+    },
+    {
+        pageId: "vi",
+        pathURL: "/Vendor-information",
+        srcLink: "js/purchase-order-list.js",
+        cssLink: "css/vendor-information.css",
+        scrLinkIsActive: false,
+    },
+    {
+        pageId: "mp",
+        pathURL: "/My-profile",
+        srcLink: "js/purchase-order-list.js",
+        cssLink: "css/rfq-list.js",
+        scrLinkIsActive: false,
+    },
+];
+
 function removeSrcLinks(doc, names = []) {
     if (!Array.isArray(names) || names.length === 0) return;
-
     // Remove matching <link rel="stylesheet">
     doc.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
         const href = link.getAttribute("href") || "";
@@ -8,7 +65,6 @@ function removeSrcLinks(doc, names = []) {
             link.remove();
         }
     });
-
     // Remove matching <script>
     doc.querySelectorAll("script").forEach((script) => {
         const src = script.getAttribute("src") || "";
@@ -51,28 +107,6 @@ function insertHTMLWithDSD(container, html) {
     container.replaceChildren(...doc.body.childNodes);
 }
 
-const removeDupeSrcLinks = [
-    "home.css",
-    "theme.css",
-    "MDBmin.css",
-    "Navigation.css",
-    "font-awesome.BootstrapV5.bundle.css",
-    "office-ui-fabric-core/11.0.0/css/fabric.min.css",
-    "fonts.cdnfonts.com/css/selawik",
-    "aos@2.3.1/dist/aos.css",
-    "font-awesome.BootstrapV5.bundle.css",
-    "preform.BootstrapV5.bundle.css",
-    "bootstrap.min.css",
-    "MsdynIcons.js",
-    "Utility.js",
-    "@fluentui/web-components",
-    "NavigationControl.js",
-    "aos@2.3.1/dist/aos.js",
-    "app.BootstrapV5.bundle.js",
-    "bootstrap.BootstrapV5.bundle.js",
-    "router.js",
-];
-
 async function fetchHtmlPage(url) {
     try {
         const response = await fetch(url, {
@@ -97,11 +131,11 @@ async function fetchHtmlPage(url) {
         doc.querySelectorAll("script").forEach((script) => {
             const content = script.textContent.trim();
             // Check for signature of unwanted script
-            if (
+            const contentScript =
                 content.includes("AOS.init") &&
-                content.includes("iconList.forEach")
-            ) {
-                script.remove(); // remove the script
+                content.includes("iconList.forEach");
+            if (contentScript) {
+                script.remove();
             }
         });
         const firstScript = doc.querySelector("script");
@@ -119,34 +153,9 @@ async function fetchHtmlPage(url) {
     }
 }
 
-async function TestMulitpleCallAsync(url) {
-    try {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: { "Content-Type": "text/html" },
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const htmlText = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlText, "text/html");
-        const cleanedHtml = doc.documentElement.outerHTML;
-        return cleanedHtml;
-    } catch (err) {
-        console.error("Failed to fetch page:", err);
-        return null;
-    }
-}
-
 async function fetchMultiple(pageLinks) {
-    // Create array of promises
     const pageToCall = pageLinks.map((link) => fetchHtmlPage(link));
-    // Wait for all promises to settle
-    const results = await Promise.all(pageToCall);
-
-    return results;
+    return await Promise.all(pageToCall);
 }
 
 function pageRenderer(pageToRender) {
@@ -156,123 +165,103 @@ function pageRenderer(pageToRender) {
     }
     const containerNav = document.querySelector(".sub-nav-container");
     containerNav.insertAdjacentHTML("afterend", pageToRender);
-    // insertHTMLWithDSD(containerNav, pageToRender);
-    // console.log('html', pageToRender);
-    // document.getElementById('main-page').innerHTML = html;
 }
 
-const route = (event) => {
-    event = event || window.event;
-    event.preventDefault();
-    window.history.pushState({}, "", event.target.href);
-    // handleLocation();
-};
-
-const routes = {
-    "/": "/Home/Home.html",
-};
-
-const handleLocation = async () => {
-    const path = window.location.pathname;
-    const route = routes["/"];
-    const pageToRender = await fetchHtmlPage(route);
-    pageRenderer(pageToRender);
-};
-
-// window.onpopstate = handleLocation;
-// window.route = route;
-var storeTestPages = [];
-function testPages() {
-    const testPages = [
-        {
-            pathURL: "/RFQ-list/?activeView=Active",
-        },
-        {
-            pathURL: "/Purchase-order-workspace/?activeView=activePO",
-        },
-        {
-            pathURL: "/Vendor-information",
-        },
-        {
-            pathURL: "/My-profile",
-        },
-    ];
-    const urlOnly = testPages.map((item) => item.pathURL);
-    fetchMultiple(urlOnly).then((_pages) => {
+async function selectedPages() {
+    const urlOnly = activePages.map((item) => item.pathURL);
+    const _pages = await fetchMultiple(urlOnly);
+    if (_pages.length) {
         _pages.forEach((page, index) => {
+            const pageProp = activePages[index];
             storeTestPages.push({
-                route: testPages[index].pathURL,
                 htmlPage: page,
+                ...pageProp,
             });
         });
-    });
-    // testPages.forEach(async (links) => {
-    // 	const pageToRender = await fetchHtmlPage(route);
-    // 	storePages.push({
-    // 		route: links.pathURL,
-    // 		htmlPage: pageToRender,
-    // 	});
-    // });
+    }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("router test");
-    testPages();
-
-    const shapeLinkCollection = [];
-    const storePages = [];
-    const linkCollection = document.querySelectorAll("ul.sub-menu-items li");
-    const sanitizeLinks = Array.from(linkCollection);
-
-    sanitizeLinks.forEach((li) => {
-        const href = li.querySelector("a").href;
-        const parsed = new URL(href);
-        const pathURL = parsed.pathname + parsed.search;
-        const predictedRoutes = {
-            pathURL,
-            href,
-            text: li.querySelector("a").textContent.trim(),
-            desc: li.querySelector("span").textContent.trim(),
+async function loadScriptByPage(pageId, scriptLink, basePath = "") {
+    await new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = basePath + scriptLink;
+        script.type = "text/javascript";
+        script.defer = true; // maintain execution order
+        script.onload = () => {
+            console.log(`Loaded: ${scriptLink}`);
+            resolve();
         };
-        shapeLinkCollection.push(predictedRoutes);
+        script.onerror = () =>
+            reject(new Error(`Failed to load ${scriptLink}`));
+        console.log(`script`, script);
+        document.body.appendChild(script);
     });
+    console.log("✅  script loaded.");
+}
 
-    // if (sanitizeLinks.length) {
-    // console.log('sanitizeLinks', sanitizeLinks);
-    // sanitizeLinks.forEach(async (links) => {
-    // 	const pageToRender = await fetchHtmlPage(route);
-    // 	storePages.push({
-    // 		route: links.pathURL,
-    // 		htmlPage: pageToRender,
-    // 	});
-    // });
-    // }
-
-    const event = new CustomEvent("loadScript", {
-        detail: { allow: true },
+async function loadCSSByPage(pageId, styleLink, basePath = "") {
+    await new Promise((resolve, reject) => {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = basePath + styleLink;
+        link.onload = () => {
+            console.log(`✅ CSS loaded: ${styleLink}`);
+            resolve();
+        };
+        link.onerror = () =>
+            reject(new Error(`❌ Failed to load CSS: ${styleLink}`));
+        document.head.appendChild(link);
     });
+    console.log(`✅ Style complete for ${pageId}: ${styleLink}`);
+}
 
+function dismissNavigation() {
+    document.dispatchEvent(
+        new CustomEvent("transmitHideMenu", {
+            detail: "hide menu bar",
+        })
+    );
+}
+
+document.addEventListener("DOMContentLoaded", async function () {
+    await selectedPages();
     let currentURL = "";
     const allsubmenus = document.querySelectorAll(".sub-menu-items");
     allsubmenus.forEach((_submenus) => {
-        console.log(_submenus);
-        _submenus.addEventListener("click", function (e) {
+        _submenus.addEventListener("click", async function (e) {
             const anchor = e.target.closest("a");
             if (!anchor || !this.contains(anchor)) return;
             e.preventDefault();
 
-            console.log("Clicked link:", anchor.href);
-            const anchorTag = new URL(anchor.href);
-            const fullPath = anchorTag.pathname + anchor.search;
-            console.log("anchorTag", anchorTag);
+            const { pathname, origin } = new URL(anchor.href);
+            const fullPath = pathname + anchor.search;
+
             if (storeTestPages.length && fullPath !== currentURL) {
-                const searchPage = storeTestPages.find(
-                    (_link) => _link.route === fullPath
+                const { htmlPage, srcLink, cssLink, pageId } =
+                    storeTestPages.find((_link) => _link.pathURL === pathname);
+                const currentTargetPage = activePages.find(
+                    (p) => p.pageId === pageId
                 );
-                window.history.pushState({}, "", anchor.href);
-                console.log("searchPage", searchPage);
-                pageRenderer(searchPage.htmlPage);
+
+                pageRenderer(htmlPage);
+                if (!currentTargetPage.scrLinkIsActive) {
+                    const jsScript = await loadScriptByPage(
+                        pageId,
+                        srcLink,
+                        origin + "/"
+                    );
+                    const cssScript = await loadCSSByPage(
+                        pageId,
+                        cssLink,
+                        origin + "/"
+                    );
+                    await Promise.all([jsScript, cssScript]);
+                    currentTargetPage.scrLinkIsActive = true;
+                }
                 currentURL = fullPath;
+                dismissNavigation();
+                window.history.pushState({}, "", anchor.href);
+                console.log("activePages", activePages);
             }
         });
     });

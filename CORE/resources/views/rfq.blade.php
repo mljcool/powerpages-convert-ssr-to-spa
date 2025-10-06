@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/rfq-list.css') }}" />
+<script type="text/javascript" src="{{ asset('js/rfq-list.js') }}"></script>
 		<div class="sectionBlockLayout">
 			<div class="container-fluid">
 				<div class="rfq-workspace-wrapper">
