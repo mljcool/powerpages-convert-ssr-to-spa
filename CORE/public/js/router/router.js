@@ -1,3 +1,4 @@
+let currentURL = "";
 const storeTestPages = [];
 const removeDupeSrcLinks = [
     "home.css",
@@ -25,13 +26,14 @@ const removeDupeSrcLinks = [
     "purchase-order.css",
     "onboarding-redirect-modal.css",
 ];
-const activePages = [
+const PORTAL_PAGES = [
     {
         pageId: "rfq",
         pathURL: "/RFQ-list/",
         srcLink: "js/rfq-list.js",
         cssLink: "css/rfq-list.css",
         preserveActiveCss: false,
+        htmlPage: null,
     },
     {
         pageId: "po",
@@ -39,6 +41,7 @@ const activePages = [
         srcLink: "js/purchase-order-list.js",
         cssLink: "css/purchase-order.css",
         preserveActiveCss: false,
+        htmlPage: null,
     },
     {
         pageId: "vi",
@@ -46,6 +49,7 @@ const activePages = [
         srcLink: "js/purchase-order-list.js",
         cssLink: "css/vendor-information.css",
         preserveActiveCss: false,
+        htmlPage: null,
     },
     {
         pageId: "mp",
@@ -53,17 +57,28 @@ const activePages = [
         srcLink: "js/purchase-order-list.js",
         cssLink: "css/rfq-list.js",
         preserveActiveCss: false,
+        htmlPage: null,
     },
 ];
 
-
 class MsdynPageHydrationFactory {
+    constructor(PAGES = []) {
+        this.fullPath = "";
+        this.currentURL = "";
+        this.activePages = PAGES;
+        this.db = new MsdynIndexDB({
+            DB_NAME: "MsdynPortalDB",
+            TABLE_NAME: "pages",
+            VERSION: 1,
+        });
+    }
     removeSrcLinks(doc, names = []) {
         if (!Array.isArray(names) || !names.length) return;
 
-        const $doc = type => doc.querySelectorAll(type);
-        const attrType = type => attr => type.getAttribute(attr) || "";
-        const existingNames = type => names.some((name) => type.includes(name));
+        const $doc = (type) => doc.querySelectorAll(type);
+        const attrType = (type) => (attr) => type.getAttribute(attr) || "";
+        const existingNames = (type) =>
+            names.some((name) => type.includes(name));
 
         $doc('link[rel="stylesheet"]').forEach((link) => {
             if (existingNames(attrType(link)("href"))) link.remove();
@@ -115,7 +130,10 @@ class MsdynPageHydrationFactory {
             const host = tpl.parentNode;
             if (!host || !host.attachShadow) return;
 
-            const mode = tpl.getAttribute("shadowrootmode") === "closed" ? "closed" : "open";
+            const mode =
+                tpl.getAttribute("shadowrootmode") === "closed"
+                    ? "closed"
+                    : "open";
             const delegatesFocus = tpl.hasAttribute("shadowrootdelegatesfocus");
 
             const shadow = host.attachShadow({ mode, delegatesFocus });
@@ -150,12 +168,14 @@ class MsdynPageHydrationFactory {
                 headers: { "Content-Type": "text/html" },
             });
 
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            if (!response.ok)
+                throw new Error(`HTTP error! Status: ${response.status}`);
 
             const htmlText = await response.text();
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlText, "text/html");
-            const elementRemover = element => doc.querySelectorAll(element).forEach((el) => el.remove())
+            const elementRemover = (element) =>
+                doc.querySelectorAll(element).forEach((el) => el.remove());
             this.removeHtmlComments(doc);
             elementRemover("meta");
             elementRemover("nav");
@@ -194,15 +214,42 @@ class MsdynPageHydrationFactory {
     }
 
     async selectedPages() {
-        const urlOnly = activePages.map((item) => item.pathURL);
+        const urlOnly = this.activePages.map((item) => item.pathURL);
         const pages = await this.fetchMultiplePage(urlOnly);
-        pages.length && pages.forEach((page, index) => {
-                const pageProp = activePages[index];
-                storeTestPages.push({
-                    htmlPage: page,
-                    ...pageProp,
-                });
+
+        await this.db.initDB();
+        await this.db.seed(this.activePages);
+        pages.length &&
+            pages.forEach(async (page, index) => {
+                const pageProp = this.activePages[index];
+                await this.db.setHtmlPage(pageProp.pageId, page);
             });
+    }
+
+    activeURL() {
+        return this.currentURL;
+    }
+
+    async renderPage(route) {
+        console.log("route", route);
+        const { origin, pathname } = new URL(route);
+        const basePath = origin + "/";
+        const fullPath = pathname + route;
+        this.dismissNavigation();
+        if (fullPath === this.currentURL) {
+            return;
+        }
+        const { htmlPage, preserveActiveCss, srcLink, cssLink, pageId } = await this.db.getByPathURL(pathname);
+        this.pageRenderer(htmlPage);
+        this.removeActiveExistingJSscript(srcLink);
+        if (!preserveActiveCss) {
+            console.log("NOT HERE");
+            await this.loadCSSByPage(pageId, cssLink, basePath);
+            await this.db.togglePreserveCss(pageId, true);
+        }
+        await this.loadScriptByPage(pageId, srcLink, basePath);
+        window.history.pushState({}, "", route);
+        this.currentURL = fullPath;
     }
 
     async loadScriptByPage(pageId, scriptLink, basePath = "") {
@@ -240,40 +287,168 @@ class MsdynPageHydrationFactory {
     }
 }
 
-document.addEventListener("DOMContentLoaded", async function () {
-    let currentURL = "";
-    const hydratedPage = new MsdynPageHydrationFactory();
-    await hydratedPage.selectedPages();
+// --- tiny helpers ---
+const promisify = (req) =>
+    new Promise((resolve, reject) => {
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+const storeOf = (db, name, mode = "readonly") =>
+    db.transaction(name, mode).objectStore(name);
 
-    const allsubmenus = document.querySelectorAll(".sub-menu-items");
-    allsubmenus.forEach((_submenus) => {
+// --- DB for your Pages schema ---
+class MsdynIndexDB {
+    constructor({
+        DB_NAME = "MsdynPortalDB",
+        TABLE_NAME = "pages",
+        VERSION = 1,
+    } = {}) {
+        this.idxDatabaseName = DB_NAME;
+        this.idxTableName = TABLE_NAME;
+        this.idxVersion = VERSION;
+        this.db = null;
+    }
+
+    async initDB() {
+        if (this.db) return this.db;
+
+        const openReq = indexedDB.open(this.idxDatabaseName, this.idxVersion);
+
+        openReq.onupgradeneeded = () => {
+            const db = openReq.result;
+            // Key by pageId (string) to keep your IDs stable (no autoIncrement)
+            if (!db.objectStoreNames.contains(this.idxTableName)) {
+                const store = db.createObjectStore(this.idxTableName, {
+                    keyPath: "pageId",
+                });
+                // Helpful indexes
+                store.createIndex("pathURL", "pathURL", { unique: true });
+                store.createIndex("srcLink", "srcLink", { unique: false });
+                store.createIndex("cssLink", "cssLink", { unique: false });
+                store.createIndex("preserveActiveCss", "preserveActiveCss", {
+                    unique: false,
+                });
+            }
+        };
+
+        openReq.onblocked = () =>
+            console.warn("Open blocked. Close other tabs using this DB.");
+
+        this.db = await promisify(openReq);
+
+        this.db.onversionchange = () => {
+            console.warn("Version change detected; closing DB handle.");
+            this.db.close();
+            this.db = null;
+        };
+
+        return this.db;
+    }
+
+    // -------------- CRUD & Utilities for Pages ----------------
+
+    /** Insert or update a single page by pageId */
+    async upsert(page) {
+        const db = await this.initDB();
+        const store = storeOf(db, this.idxTableName, "readwrite");
+        return promisify(store.put(page));
+    }
+
+    /** Bulk seed (insert/update) pages */
+    async seed(pagesArray) {
+        const db = await this.initDB();
+        const tx = db.transaction(this.idxTableName, "readwrite");
+        const store = tx.objectStore(this.idxTableName);
+        await Promise.all(pagesArray.map((p) => promisify(store.put(p))));
+        return new Promise((resolve, reject) => {
+            tx.oncomplete = () => resolve(true);
+            tx.onerror = () => reject(tx.error);
+        });
+    }
+
+    async getAll() {
+        const db = await this.initDB();
+        return promisify(storeOf(db, this.idxTableName).getAll());
+    }
+
+    async getByPageId(pageId) {
+        const db = await this.initDB();
+        return promisify(storeOf(db, this.idxTableName).get(pageId));
+    }
+
+    async getByPathURL(pathURL) {
+        const db = await this.initDB();
+        const idx = storeOf(db, this.idxTableName).index("pathURL");
+        return promisify(idx.get(pathURL));
+    }
+
+    async existsById(pageId) {
+        const db = await this.initDB();
+        const store = storeOf(db, this.idxTableName);
+        const record = await promisify(store.get(pageId));
+        return !!record;
+    }
+
+    async existsByPathURL(pathURL) {
+        const db = await this.initDB();
+        const idx = storeOf(db, this.idxTableName).index("pathURL");
+        const record = await promisify(idx.get(pathURL));
+        return !!record;
+    }
+
+    async delete(pageId) {
+        const db = await this.initDB();
+        return promisify(
+            storeOf(db, this.idxTableName, "readwrite").delete(pageId)
+        );
+    }
+
+    async clear() {
+        const db = await this.initDB();
+        return promisify(storeOf(db, this.idxTableName, "readwrite").clear());
+    }
+
+    async togglePreserveCss(pageId, value) {
+        const db = await this.initDB();
+        const store = storeOf(db, this.idxTableName, "readwrite");
+        const record = await promisify(store.get(pageId));
+        if (!record) throw new Error(`Page "${pageId}" not found`);
+        record.preserveActiveCss = !!value;
+        return promisify(store.put(record));
+    }
+
+    async setHtmlPage(pageId, htmlStringOrBlob) {
+        const db = await this.initDB();
+        const store = storeOf(db, this.idxTableName, "readwrite");
+        const record = await promisify(store.get(pageId));
+        if (!record) throw new Error(`Page "${pageId}" not found`);
+        record.htmlPage = htmlStringOrBlob; // string, Blob, or ArrayBuffer all OK in IDB
+        return promisify(store.put(record));
+    }
+
+    close() {
+        if (this.db) {
+            this.db.close();
+            this.db = null;
+        }
+    }
+
+    async deleteDatabase() {
+        this.close();
+        return promisify(indexedDB.deleteDatabase(this.idxDatabaseName));
+    }
+}
+
+document.addEventListener("DOMContentLoaded", async function () {
+    const hydratedPage = new MsdynPageHydrationFactory(PORTAL_PAGES);
+    await hydratedPage.selectedPages();
+    document.querySelectorAll(".sub-menu-items").forEach((_submenus) => {
         _submenus.addEventListener("click", async function (e) {
             const anchor = e.target.closest("a");
             if (!anchor || !this.contains(anchor)) return;
             e.preventDefault();
-
-            const { pathname, origin } = new URL(anchor.href);
-            const fullPath = pathname + anchor.search;
-
-            if (storeTestPages.length && fullPath !== currentURL) {
-                const basePath = origin + "/";
-                const { htmlPage, srcLink, cssLink, pageId } =
-                    storeTestPages.find((_link) => _link.pathURL === pathname);
-                const currentTargetPage = activePages.find(
-                    (p) => p.pageId === pageId
-                );
-                hydratedPage.removeActiveExistingJSscript(srcLink);
-                hydratedPage.pageRenderer(htmlPage);
-                if (!currentTargetPage.preserveActiveCss) {
-                    await hydratedPage.loadCSSByPage(pageId, cssLink, basePath);
-                    currentTargetPage.preserveActiveCss = true;
-                }
-                await hydratedPage.loadScriptByPage(pageId, srcLink, basePath);
-                hydratedPage.dismissNavigation();
-                window.history.pushState({}, "", anchor.href);
-                currentURL = fullPath;
-                console.log("activePages", activePages);
-            }
+            const routed = anchor.href;
+            await hydratedPage.renderPage(routed);
         });
     });
 
@@ -281,12 +456,37 @@ document.addEventListener("DOMContentLoaded", async function () {
     myProfileLink.addEventListener("click", function (e) {
         e.preventDefault();
         const link = "/My-profile";
-        if (storeTestPages.length && link !== currentURL) {
-            const searchPage = storeTestPages.find(
-                (_link) => _link.pathURL === link
-            );
-            hydratedPage.pageRenderer(searchPage.htmlPage);
-            fullPath = "/My-profile";
-        }
+        hydratedPage.renderPage(link);
     });
 });
+
+// document.addEventListener("DOMContentLoaded", async () => {
+//     await db.initDB();
+
+//     // Seed once (idempotent because we use put)
+//     await db.seed(pagesData);
+
+//     // Read examples
+//     const all = await db.getAll();
+//     console.log("All pages:", all);
+
+//     const rfq = await db.getByPageId("rfq");
+//     console.log("RFQ page:", rfq);
+
+//     const byUrl = await db.getByPathURL("/Vendor-information");
+//     console.log("By pathURL:", byUrl);
+
+//     // Update examples
+//     await db.togglePreserveCss("po", true);
+//     await db.setHtmlPage("rfq", "<div>RFQ HTML cached…</div>");
+
+//     // Upsert / change links
+//     await db.upsert({
+//         pageId: "mp",
+//         pathURL: "/My-profile",
+//         srcLink: "js/purchase-order-list.js",
+//         cssLink: "css/profile.css",
+//         preserveActiveCss: true,
+//         htmlPage: "<div>Profile cached</div>",
+//     });
+// });
