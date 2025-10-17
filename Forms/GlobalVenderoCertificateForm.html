@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body></body>
+</html>
+<script>
+	let syncCompleted = false;
+
+$(async function () {
+    await tryCatchWrapper(async () => {
+        await loadScriptIfMissing("/mapping-manager.js");
+        await fetchMappingConfig(SYNC_CONFIG_NAME, SYNC_ENTITIES.CERTIFICATE);
+    }, (err) => alert(err));
+
+    const msdyn_partyid = window.parent.document.getElementById('msdyn_partyid');
+    const entityFormPanel = document.querySelector("#EntityFormPanel");
+    entityFormPanel.insertAdjacentHTML("beforeend", msdyn_partyid.outerHTML);
+
+    if (typeof entityFormClientValidate !== "undefined") {
+        const originalValidationFunction = entityFormClientValidate;
+
+        if (originalValidationFunction && typeof originalValidationFunction === "function") {
+            entityFormClientValidate = async function () {
+                const isValid = originalValidationFunction.apply(this, arguments);
+                if (!isValid || syncCompleted) return isValid;
+                const $insBtn = $(`#${FORM_BUTTONS.CREATE}`);
+                 $insBtn.prop("disabled", true);
+                try {
+                   
+                    const mappingManager = new MappingManager(SYNC_CONFIG_NAME, CRUD_ACTION.CREATE);
+                    await mappingManager.sync(SYNC_ENTITIES.CERTIFICATE, null, {});
+                    syncCompleted = true;
+                    $insBtn.click();
+
+                } catch (error) {
+                    alert("Synchronization failed: " + error);
+                    $insBtn.prop("disabled", false);
+                    syncCompleted = false;
+                    return false;
+                }
+                return false; // Prevent immediate submit until sync finishes
+            };
+        }
+    }
+
+});
+
+
+async function loadScriptIfMissing(path) {
+    if (typeof MappingManager === "undefined") {
+        return new Promise((resolve, reject) => {
+            const s = document.createElement("script");
+            s.src = path;
+            s.type = "text/javascript";
+            s.async = true;
+            s.onload = resolve;
+            s.onerror = reject;
+            document.head.appendChild(s);
+        });
+    }
+    return Promise.resolve();
+}
+
+async function tryCatchWrapper(fn, onError) {
+    try {
+        return await fn();
+    } catch (err) {
+        if (onError) onError(err);
+        else console.error("error:", err);
+    }
+}
+</script>
+<script>
+    /**
+ * MappingManager - Syncs data between Dataverse and Finance & Operations (F&O).
+ *
+ * This class is responsible for handling data transfers based on configuration-driven field mappings.
+ *
+ * What it does:
+ * - Loads mapping rules from a VRM Sync Config entity in Dataverse.
+ * - Caches that config in session storage for 5 minutes to avoid repeated lookups.
+ * - Extracts values from a Basic Form or web page using DOM IDs.
+ * - Applies field-level transformations based on field type (Text, Number, Lookup, etc).
+ * - Supports Create, Update, and Delete actions for virtual entities.
+ * - Keeps the source and target in sync, including handling nested/child records using Promise.all for batch updates.
+ *
+ * How to use it:
+ * 1. On page load, request the VRM Sync Config and store it in session storage.
+ * 2. Initialize the MappingManager with:
+ *    - The name of the Sync Config entity.
+ *    - The action you want to perform (Create, Update, Delete).
+ * 3. Call `.sync(sourceEntityName, virtualEntityGuid)`:
+ *    - This method will read form values, map them based on config, and send them to the target system.
+ *
+ * Notes:
+ * - Virtual Entity GUID must be available on the form when updating or deleting records. It’s optional for Create.
+ * - The virtual entity record is always handled first. Once that's done, it continues with the standard Dataverse record.
+ * - If syncing the F&O record fails, the OOB method of creating the record is stopped.
+ * - Add this to the global header/page template so you can use it from any page or load the script on load if used on a page without a header.
+ *
+ * Related helper functions:
+ * - `fetchMappingConfig` gets the config from Dataverse.
+ * - `getMappingConfigFromStorage` handles caching and reading from session storage.
+ */
+
+/**
+ * Enum mapping column type names to numeric values.
+ */
+const ColumnTypeHandlers = {
+    Text: 192350000,
+    WholeNumber: 192350001,
+    Decimal: 192350002,
+    Lookup: 192350003,
+    Choice: 192350004,
+    DateTime: 192350005,
+    Boolean: 192350006,
+};
+
+/**
+ * Crud actions.
+ */
+const CRUD_ACTION = {
+    CREATE: "Create",
+    UPDATE: "Update",
+    DELETE: "Delete"
+}
+
+/**
+ * Type of the VRM Sync Error
+ */
+const SYNC_ERROR_TYPE = {
+    Plugin: 192350000,
+    WebAPI: 192350001
+}
+
+/**
+ * VRM Sync Config caching
+ */
+const CACHE_KEY = "syncConfig";
+const CACHE_EXPIRY_KEY = "syncConfig_expiry";
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const SYNC_CONFIG_NAME = "msdyn_vrmsyncconfig";
+
+const SYNC_ENTITIES = {
+    CONTACT_METHOD: "msdyn_vrmpartycontact",
+    ADDRESS: "msdyn_vrmvendorpostaladdress",
+    CONTACT: "contact",
+    CERTIFICATE: "msdyn_globalvendorcertificate"
+}
+
+/**
+ * Custom entity configuration
+ * Field Mappings array should be the same as the VRM Sync Config
+ * 
+ * There are some fields that are being mapped from a quick find view,
+ * instead of a normal web api request due to improving performance.
+ * In this case the isQuickFindView should be set to true and the identifier
+ * of the quick find view should be passed
+ * 
+ * @example { 
+ *      SourceField: "<field_name>",
+ *      TargetField: "<field_name>", 
+ *      Type: "<field_type>", 
+ *      isQuickFindView: <boolean>, 
+ *      quickFindViewId: "<view_id>" 
+ * }
+ */
+const ENTITY_CONFIGURATION = {
+    [SYNC_ENTITIES.CONTACT_METHOD]: {
+        FieldMappings: [],
+        SkipMappings: [
+
+        ]
+    },
+    [SYNC_ENTITIES.ADDRESS]: {
+        FieldMappings: [{
+            SourceField: "msdyn_globalvendor",
+            TargetField: "mserp_fk_globalvendor_id",
+            TargetFieldSchemaName: "mserp_FK_GlobalVendor_id",
+            LookupEntityName: "mserp_vrmglobalvendorentity",
+            Type: 192350003,
+            isQuickFindView: true,
+            quickFindViewId: "msdyn_globalvendor_quickfindview"
+        }
+
+        ],
+        SkipMappings: [{
+            SourceField: "msdyn_globalvendor",
+            TargetField: "mserp_fk_globalvendor_id"
+        },
+        {
+            SourceField: "msdyn_addressstateid",
+            TargetField: "mserp_state"
+        }
+        ]
+    },
+    [SYNC_ENTITIES.CERTIFICATE]: {
+        FieldMappings: [],
+        SkipMappings: []
+    },
+}
+
+const FORM_BUTTONS = {
+    CREATE: "InsertButton",
+    UPDATE: "UpdateButton"
+}
+
+/**
+ * Merges the VRM Sync Configuration with the default configuration of the entity
+ * 
+ * @param defaults Default configuration for the entity
+ * @param overrides VRM Sync Configuration mapping
+ * @param skips Skip field mappings
+ * @returns 
+ */
+const mergeFieldMappings = (defaults = [], overrides = [], skips = []) => {
+    const keyOf = (m) => `${m.SourceField}::${m.TargetField}`;
+    const mergedMap = new Map([...defaults, ...overrides].map(m => [keyOf(m), m]));
+
+    // Filter logic — skip entries that match both source & target fields
+    const shouldSkip = (mapping) => skips.some(
+        skip => skip.SourceField === mapping.SourceField && skip.TargetField === mapping.TargetField
+    );
+
+    return Array.from(mergedMap.values()).filter(m => !shouldSkip(m));
+};
+
+/**
+ * Constructor for MappingManager.
+ * Initializes sync configuration name, CRUD action, and column type handlers.
+ *
+ * @param {string} syncConfigName - The name of the synchronization configuration entity.
+ * @param {string} crudAction - The CRUD action to perform (Create, Update, Delete).
+ * 
+ */
+class MappingManager {
+    constructor(syncConfigName, crudAction) {
+        this.syncConfigName = syncConfigName;
+        this.crudAction = crudAction;
+        this.columnTypeHandlers = {
+            [ColumnTypeHandlers.Text]: new TextColumnTypeHandler(),
+            [ColumnTypeHandlers.WholeNumber]: new WholeNumberColumnTypeHandler(),
+            [ColumnTypeHandlers.Decimal]: new DecimalColumnTypeHandler(),
+            [ColumnTypeHandlers.Lookup]: new LookupColumnTypeHandler(),
+            [ColumnTypeHandlers.Choice]: new ChoiceColumnTypeHandler(),
+            [ColumnTypeHandlers.DateTime]: new DateTimeColumnTypeHandler(),
+            [ColumnTypeHandlers.Boolean]: new BooleanColumnTypeHandler(),
+        };
+    }
+
+    /**
+     * Main synchronization function.
+     *
+     * - Fetches mapping configuration.
+     * - Extracts values from form elements.
+     * - Processes field mappings.
+     * - Executes the corresponding CRUD operation.
+     *
+     * @param {string} sourceEntityName - Name of the source entity to sync.
+     * @param {string | null} veGuidId - Virtiual Entity Guid to be synced
+     */
+    async sync(sourceEntityName, veGuidId, additionalConfiguration = {}) {
+        let sourceEntity = {};
+        let targetEntity = {};
+        const defaultMappings = ENTITY_CONFIGURATION[sourceEntityName]?.FieldMappings || [];
+        const skipMappings = ENTITY_CONFIGURATION[sourceEntityName]?.SkipMappings || [];
+
+        try {
+            let config = await this.getMappingConfigFromStorage(this.syncConfigName, sourceEntityName);
+
+            if (!config) {
+                throw new Error("Mapping configuration not found.");
+            }
+
+            if (!config.FieldMappings)
+                throw new Error("No Config Mappings found!");
+
+            config.FieldMappings = mergeFieldMappings(defaultMappings, config.FieldMappings, skipMappings);
+            sourceEntity = buildSourceEntity(config.FieldMappings);
+
+            targetEntity = await this.processMappings(sourceEntity, config);
+
+            if (!targetEntity) {
+                throw new Error("Cannot sync data, missing valid mappings.");
+            }
+
+            Object.assign(targetEntity, additionalConfiguration);
+            await this.executeCrudAction(targetEntity, config.TargetEntity, veGuidId);
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    /**
+     * Executes the Crud Action
+     * 
+     * @param targetEntity Target Entity object
+     * @param targetTable Target Entity table
+     * @param veGuidId Virtual Entity Guid
+     */
+    async executeCrudAction(targetEntity, targetTable, veGuidId) {
+        switch (this.crudAction) {
+            case CRUD_ACTION.CREATE:
+                await this.handleCreate(targetEntity, targetTable);
+                break;
+            case CRUD_ACTION.UPDATE:
+                await this.handleUpdate(veGuidId, targetEntity, targetTable);
+                break;
+            case CRUD_ACTION.DELETE:
+                await this.handleDelete(veGuidId, targetTable);
+                break;
+            default:
+                throw new Error("Error: Unsupported CRUD action.");
+        }
+    }
+
+    /**
+     * Retrieves mapping configuration from the Session Storage.
+     * 
+     * The VRM Sync Config should be set to session storage on page load.
+     * If undefined, request for new config and set it to session storage.
+     * @param {string} syncConfigLogicalName - Logical name of the sync configuration entity.
+     * @param {string} sourceEntityName - Name of the source entity.
+     * @returns {Object} - Returns parsed Sync Configuration object.
+     */
+    async getMappingConfigFromStorage(syncConfigLogicalName, sourceEntityName) {
+        let syncConfig = sessionStorage.getItem(CACHE_KEY);
+        const cacheExpiry = sessionStorage.getItem(CACHE_EXPIRY_KEY);
+
+        if (syncConfig && cacheExpiry && Date.now() < parseInt(cacheExpiry)) {
+            let conf = JSON.parse(syncConfig);
+            if (conf.SourceEntity === sourceEntityName)
+                return JSON.parse(syncConfig);
+        }
+
+        try {
+            syncConfig = await fetchMappingConfig(syncConfigLogicalName, sourceEntityName);
+            return JSON.parse(syncConfig);
+        } catch (error) {
+            return null;
+        }
+    }
+
+    /**
+     * Transforms source entity data based on mapping configuration.
+     *
+     * @param {Object} sourceEntity - Object containing extracted source values.
+     * @param {Object} config - Mapping configuration object.
+     * @returns {Object} - Transformed target entity.
+     */
+    async processMappings(sourceEntity, config) {
+        let lookupPromises = [];
+
+        const targetEntity = config.FieldMappings.reduce((acc, mapping) => {
+            const handler = this.columnTypeHandlers[mapping.Type];
+            if (!handler) {
+                return acc;
+            }
+
+            let value = handler.mapValue(sourceEntity, mapping.SourceField, mapping.LookupEntityName);
+            if (value === undefined) return acc;
+
+            if (mapping.Type === ColumnTypeHandlers.Lookup) {
+                acc[`${mapping.TargetFieldSchemaName}${!value ? "" : `@odata.bind`}`] = createLookupBinding(mapping.LookupEntityName, value);
+            } else if (mapping.Type === ColumnTypeHandlers.Text && mapping.LookupFieldName) {
+                lookupPromises.push(
+                    getEntityReferenceToString(mapping.SourceField, mapping.LookupFieldName, value).then(val => {
+                        acc[mapping.TargetField] = val;
+                    })
+                );
+            } else {
+                acc[mapping.TargetField] = value;
+            }
+
+            return acc;
+        }, {});
+
+        await Promise.all(lookupPromises);
+
+        return targetEntity;
+    }
+
+    /**
+     * Creates a new Virtual Entity record.
+     *
+     * @param {Object} targetEntity - Data to be sent to the target entity.
+     * @param {string} destinationTable - Logical name of the target entity table.
+     * @returns {Promise<Object>} - Resolves on successful creation.
+     */
+    async handleCreate(targetEntity, destinationTable) {
+
+        if (targetEntity.hasOwnProperty(`${destinationTable}id`))
+            delete targetEntity[`${destinationTable}id`];
+
+        // Remove null values
+        Object.keys(targetEntity).forEach(key => {
+            if (targetEntity[key] === null) {
+                delete targetEntity[key];
+            }
+        });
+
+        if (targetEntity.mserp_personaltitle) {
+            targetEntity.mserp_personaltitle = targetEntity.mserp_personaltitle
+                .trim()
+                .replace(/^['"]|['"]$/g, '');
+        }
+
+        return new Promise((resolve, reject) => {
+            webapi.safeAjax({
+                type: "POST",
+                url: `/_api/${_getPlural(destinationTable)}`,
+                contentType: "application/json",
+                data: JSON.stringify(targetEntity),
+                success: (data, textStatus, xhr) => {
+                    var newId = xhr.getResponseHeader("entityid");
+                    let veGuidEl = document.getElementById("msdyn_vrmverecordguid");
+                    if (veGuidEl) {
+                        veGuidEl.value = newId;
+                    } else {
+                        throw new Error("Virtual Entity Guid not found on the Form!");
+                    }
+                    resolve();
+                },
+                error: (xhr) => {
+                    let errorMessage =
+                        xhr.responseJSON?.error?.innererror?.message ||
+                        xhr.responseJSON?.error?.message ||
+                        xhr.responseText;
+
+                    reject(errorMessage);
+                },
+            });
+        });
+    }
+
+
+    /**
+     * Updates an existing Virtual Entity record.
+     *
+     * @param {string} entityId - ID of the entity to update.
+     * @param {Object} targetEntity - Data to update in the entity.
+     * @param {string} destinationTable - Logical name of the target entity table.
+     * @returns {Promise<void>} - Resolves on successful update.
+     */
+    async handleUpdate(entityId, targetEntity, destinationTable) {
+        if (targetEntity.hasOwnProperty(`${destinationTable}id`))
+            delete targetEntity[`${destinationTable}id`];
+
+        // Remove null values
+        Object.keys(targetEntity).forEach(key => {
+            if (targetEntity[key] === null) {
+                delete targetEntity[key];
+            }
+        });
+
+        if (targetEntity.mserp_personaltitle) {
+            targetEntity.mserp_personaltitle = targetEntity.mserp_personaltitle
+                .trim()
+                .replace(/^['"]|['"]$/g, '');
+        }
+
+        return new Promise((resolve, reject) => {
+            webapi.safeAjax({
+                type: "PATCH",
+                url: `/_api/${_getPlural(destinationTable)}(${entityId})`,
+                contentType: "application/json",
+                data: JSON.stringify(targetEntity),
+                success: () => {
+                    resolve();
+                },
+                error: (xhr) => {
+                    let errorMessage =
+                        xhr.responseJSON?.error?.innererror?.message ||
+                        xhr.responseJSON?.error?.message ||
+                        xhr.responseText;
+
+                    reject(errorMessage);
+                },
+            });
+        });
+    }
+
+    /**
+     * Deletes an existing Virtual Entity record.
+     *
+     * @param {string} entityId - ID of the entity to delete.
+     * @returns {Promise<void>} - Resolves on successful deletion.
+     */
+    async handleDelete(entityId, destinationTable) {
+        return new Promise((resolve, reject) => {
+            webapi.safeAjax({
+                type: "DELETE",
+                url: `/_api/${_getPlural(destinationTable)}(${entityId})`,
+                contentType: "application/json",
+                success: () => {
+                    resolve();
+                },
+                error: (xhr) => {
+                    let errorMessage =
+                        xhr.responseJSON?.error?.innererror?.message ||
+                        xhr.responseJSON?.error?.message ||
+                        xhr.responseText;
+
+                    reject(errorMessage);
+                },
+            });
+        });
+    }
+}
+
+/**
+ * Base class for handling different column types.
+ */
+class BaseColumnTypeHandler {
+    /**
+     * Retrieves a field value from the source entity.
+     *
+     * @param {Object} sourceEntity - The source entity object.
+     * @param {string} fieldName - The field name to retrieve.
+     * @returns {Object|undefined} - The field object if found, otherwise undefined.
+     */
+    getSourceValue(sourceEntity, fieldName) {
+        if (!fieldName || !sourceEntity.hasOwnProperty(fieldName)) {
+            console.warn(`Warning: Field '${fieldName}' not found in source entity.`);
+            return undefined;
+        }
+        return sourceEntity[fieldName];
+    }
+
+    /**
+     * Abstract method to be implemented by subclasses.
+     *
+     * @param {Object} sourceEntity - The source entity object.
+     * @param {string} fieldName - The field name to map.
+     * @throws {Error} - If not implemented in subclass.
+     */
+    mapValue(sourceEntity, fieldName) {
+        throw new Error("mapValue method must be implemented in subclasses.");
+    }
+}
+
+/**
+ * Handles mapping of text fields.
+ */
+class TextColumnTypeHandler extends BaseColumnTypeHandler {
+    mapValue(sourceEntity, fieldName) {
+        let field = this.getSourceValue(sourceEntity, fieldName);
+        if (!field || !field.value) {
+            console.warn(`Warning: Invalid or empty field or value for field '${fieldName}'. Value: ${field?.value}`);
+            return null;
+        }
+        let rawValue = field.value.trim();
+        let decoded = rawValue;
+
+        // Decode HTML-encoded JSON (e.g., &quot;)
+        if (rawValue.includes('&quot;')) {
+            decoded = $('<div/>').html(rawValue).text();
+        }
+        if (isMultiSelect(fieldName)) {
+            // Try to detect JSON and extract Values
+            try {
+                const parsed = JSON.parse(decoded);
+
+                if (Array.isArray(parsed) && parsed.every(item => typeof item.Value !== 'undefined')) {
+                    // ✅ JSON detected and parsed successfully, return only the Value fields
+                    return parsed.map(item => item.Value).join(', ');
+                }
+            } catch (e) {
+                // Not JSON, ignore and fall back to original return
+            }
+        }
+
+        // Default behavior: return string
+        return String(rawValue);
+
+
+        //return field.value ? String(field.value) : null;
+    }
+}
+
+/**
+ * Handles mapping of whole number fields.
+ */
+class WholeNumberColumnTypeHandler extends BaseColumnTypeHandler {
+    mapValue(sourceEntity, fieldName) {
+        let field = this.getSourceValue(sourceEntity, fieldName);
+        if (!field || !field.value) {
+            console.warn(`Warning: Invalid or empty field or value for field '${fieldName}'`);
+            return null;
+        }
+
+        return Number.isInteger(field.value) ? field.value : parseInt(field.value) || null;
+    }
+}
+
+/**
+ * Handles mapping of decimal fields.
+ */
+class DecimalColumnTypeHandler extends BaseColumnTypeHandler {
+    mapValue(sourceEntity, fieldName) {
+        let field = this.getSourceValue(sourceEntity, fieldName);
+        if (!field || !field.value) {
+            console.warn(`Warning: Invalid or empty field or value for field '${fieldName}'`);
+            return null;
+        }
+
+        return typeof field.value === "number" ?
+            !isNaN(parseFloat(field.value)) ?
+                field.value :
+                null :
+            parseFloat(field.value) || null;
+    }
+}
+
+/**
+ * Handles mapping of lookup fields.
+ */
+class LookupColumnTypeHandler extends BaseColumnTypeHandler {
+    mapValue(sourceEntity, fieldName, lookupEntityName) {
+        let field = this.getSourceValue(sourceEntity, fieldName);
+
+        if (!field || !field?.value || !lookupEntityName) {
+            console.warn(`Warning: Invalid or empty lookup value or entity name for field '${fieldName}'. Value: ${field?.value}. LookupEntityName: ${lookupEntityName}`);
+            return null;
+        }
+
+        return field.value;
+    }
+}
+
+/**
+ * Handles mapping of choice (option set) fields.
+ */
+class ChoiceColumnTypeHandler extends BaseColumnTypeHandler {
+    mapValue(sourceEntity, fieldName) {
+        let field = this.getSourceValue(sourceEntity, fieldName);
+        if (!field || !field.value) {
+            console.warn(`Warning: Invalid or empty field or value for field '${fieldName}'`);
+            return null;
+        }
+        if (Number.isInteger(field.value)) {
+            return field.value;
+        }
+        let parsedValue = parseInt(field.value);
+        return !isNaN(parsedValue) ? parsedValue : null;
+    }
+}
+
+/**
+ * Handles mapping of datetime fields.
+ */
+class DateTimeColumnTypeHandler extends BaseColumnTypeHandler {
+    mapValue(sourceEntity, fieldName) {
+        let field = this.getSourceValue(sourceEntity, fieldName);
+
+        if (!field || !field.value) {
+            console.warn(`Warning: Invalid or empty field or value for field '${fieldName}'`);
+            return null;
+        }
+
+        return field.value ?
+            field.value instanceof Date && !isNaN(field.value) ?
+                field.value.toISOString() :
+                !isNaN(new Date(field.value)) && typeof field.value === "string" ?
+                    field.value :
+                    null :
+            null;
+    }
+}
+
+/**
+ * Handles mapping of boolean fields.
+ */
+class BooleanColumnTypeHandler extends BaseColumnTypeHandler {
+    mapValue(sourceEntity, fieldName) {
+        let field = this.getSourceValue(sourceEntity, fieldName);
+        if (!field || !field?.value) {
+            console.warn(`Warning: Invalid or empty field or value for field '${fieldName}'. Value: ${field?.value}`);
+            return null;
+        }
+
+        if (typeof field.value === "boolean") return field.value;
+        let normalized = String(field.value).toLowerCase();
+        return ["true", "1", "yes"].includes(normalized) ? true : ["false", "0", "no"].includes(normalized) ? false : null;
+    }
+}
+
+/**
+ * Gets the field name from entity.
+ * Used for Lookup -> Text mapping
+ * 
+ * @param sourceField Source field
+ * @param fieldName Field name that needs to be searched for
+ * @param value The value of the source field (Guid)
+ * @returns {string} The string value that needs to be set
+ */
+async function getEntityReferenceToString(sourceField, fieldName, value) {
+    if (!value || !fieldName)
+        return null;
+
+    let entityName = document.getElementById(`${sourceField}_entityname`)?.value;
+    if (!entityName)
+        return null;
+
+    const req = () => new Promise((resolve, reject) => {
+        webapi.safeAjax({
+            type: "GET",
+            url: `/_api/${_getPlural(entityName)}(${value})?$select=${fieldName}`,
+            contentType: "application/json",
+            success: (data) => {
+                resolve(data[fieldName] ?? null);
+            },
+            error: (xhr) => {
+                let errorMessage =
+                    xhr.responseJSON?.error?.innererror?.message ||
+                    xhr.responseJSON?.error?.message ||
+                    xhr.responseText;
+
+                reject(errorMessage);
+            },
+        });
+    });
+
+    try {
+        const response = await req();
+        return response;
+    } catch (e) {
+        alert(e);
+    }
+}
+
+/**
+ * Converts an entity logical name to its plural form.
+ *
+ * @param {string} str - Entity logical name.
+ * @returns {string} - Pluralized entity name.
+ */
+function _getPlural(str) {
+    if (str.endsWith("s")) {
+        return str + "es";
+    } else if (str.endsWith("y")) {
+        return str.slice(0, -1) + "ies";
+    } else {
+        return str + "s";
+    }
+}
+
+/**
+ * Creates a lookup binding for the WebApi request
+ * @param entityName Entity name
+ * @param value The Guid
+ * @returns Property used for updating lookup as /entityname(<id>)
+ */
+function createLookupBinding(entityName, value) {
+    return value ? `/${_getPlural(entityName)}(${value})` : null;
+}
+
+/**
+ * Extracts all form values based on the field mappings and returns a structured source entity.
+ * 
+ * @param {Array} fieldMappings - Array of field mapping objects.
+ * @returns {Object} - The structured source entity object.
+ */
+function buildSourceEntity(fieldMappings) {
+    return fieldMappings.reduce((acc, fm) => {
+        let element = document.getElementById(fm.SourceField);
+        if (fm.hasOwnProperty("isQuickFindView") && fm.isQuickFindView === true && fm.quickFindViewId) {
+            const iframe = document.getElementById(fm.quickFindViewId);
+            const innerDocument = iframe?.contentDocument || iframe?.contentWindow.document;
+            element = innerDocument?.getElementById(fm.SourceField);
+        }
+
+        if (!element) {
+            console.warn(`Warning: Element with ID '${fm.SourceField}' not found.`);
+            return acc; // Skip this field
+        }
+
+        acc[fm.SourceField] = {
+            value: extractInputValue(element),
+            type: fm.Type,
+            lookupEntity: fm.Type === ColumnTypeHandlers.Lookup && fm.LookupEntityName ? fm.LookupEntityName : null
+        };
+
+        return acc;
+    }, {});
+}
+
+/**
+ * Extracts the value from the DOM element on the Basic Form
+ * @param element The HTML element
+ * @returns Field value
+ */
+function extractInputValue(element) {
+    switch (element.tagName.toLowerCase()) {
+        case "input":
+            switch (element.type) {
+                case "checkbox":
+                    return element.checked;
+                case "number":
+                    return element.value ? parseFloat(element.value) : null;
+                case "radio":
+                    return document.querySelector(`input[name="${element.name}"]:checked`)?.value || null;
+                default:
+                    return element.value;
+            }
+        case "select":
+            return element.value;
+        case "textarea":
+            return element.value;
+        default:
+            let warningMsg = `Warning: Unsupported element type for '${fm.SourceField}': ${element.tagName}`;
+            console.warn(warningMsg);
+            return null;
+    }
+}
+
+/**
+ * Retrieves mapping configuration from Dataverse.
+ *
+ * @param {string} syncConfigLogicalName - Logical name of the sync configuration entity.
+ * @param {string} sourceEntityName - Name of the source entity.
+ * @returns {Promise<string>} - Resolves Sync Configuration as stringified json object
+ */
+async function fetchMappingConfig(syncConfigLogicalName, sourceEntityName) {
+    return new Promise((resolve, reject) => {
+        webapi.safeAjax({
+            type: "GET",
+            url: `/_api/${_getPlural(
+                syncConfigLogicalName
+            )}?$filter=(msdyn_sourcetable eq '${sourceEntityName}' and createdon le ${new Date().toISOString()})&$select=msdyn_config,msdyn_sourcetable`,
+            contentType: "application/json",
+            success: function (data) {
+                if (!data || data?.value.length === 0)
+                    reject("No config found.");
+
+                let result = data.value[0];
+
+                if (result.msdyn_config) {
+                    sessionStorage.setItem(CACHE_KEY, result.msdyn_config);
+                    sessionStorage.setItem(CACHE_EXPIRY_KEY, (Date.now() + CACHE_DURATION).toString());
+                    resolve(result.msdyn_config);
+                } else
+                    reject("Error parsing JSON config: " + error);
+            },
+            error: function (xhr) {
+                let errorMessage =
+                    xhr.responseJSON?.error?.innererror?.message ||
+                    xhr.responseJSON?.error?.message ||
+                    xhr.responseText;
+
+                reject("Error fetching mapping config: " + errorMessage);
+            },
+        });
+    });
+}
+
+/**
+ * Updates/syncs the children records of the Header
+ * @param children Children records that needs to be updated/synced (PO/RFQ Lines)
+ * @returns  
+ */
+async function updateChildRecords(children) {
+    const updateRecord = (id, data) => {
+        return new Promise((resolve, reject) => {
+            webapi.safeAjax({
+                type: "PATCH",
+                url: `/_api/${_getPlural(id)}`,
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function () {
+                    resolve();
+                },
+                error: function (xhr) {
+                    let errorMessage =
+                        xhr.responseJSON?.error?.innererror?.message ||
+                        xhr.responseJSON?.error?.message ||
+                        xhr.responseText;
+
+                    reject("Error fetching mapping config: " + errorMessage);
+                }
+            })
+        })
+    };
+
+    try {
+        return await Promise.all(children.map(({
+            id,
+            data
+        }) => updateRecord(id, data)));
+    } catch (error) {
+        alert(error);
+    }
+}
+
+/**
+ * Check if field is Multiselect
+ */
+
+function isMultiSelect(fieldId) {
+    const inputEl = document.getElementById(fieldId);
+    if (!inputEl) return false;
+
+    const container = inputEl.parentElement;
+    const controlSpan = container?.querySelector(`span[id="${fieldId}_Container"]`);
+    if (!controlSpan) return false;
+
+    const pcfConfigEl = controlSpan.querySelector(`[id^="PcfControlConfig_${fieldId}"]`);
+    if (!pcfConfigEl) return false;
+
+    const controlConfig = pcfConfigEl.getAttribute("data-pcf-control");
+    if (!controlConfig) return false;
+
+    try {
+        const config = JSON.parse($("<div/>").html(controlConfig).text());
+        return config?.Resources?.some(r => r.Path?.includes("MultiSelectPicklistControl"));
+    } catch {
+        return false;
+    }
+}
+
+/**
+ *  GET record (entity) within VE established by syntax (like by name or value) rather than a true relational key.
+ */
+async function getVERecordsByConditions(entityName, fields = [], conditions = [], veFieldKey) {
+    if (!entityName) throw new Error("entityName is required");
+    if (!veFieldKey) throw new Error("veFieldKey is required");
+    const select = Array.from(new Set([...(fields || []), veFieldKey])).join(",");
+    const filter = (conditions && conditions.length)
+        ? `&$filter=${conditions.join(" and ")}`
+        : "";
+    const safeAjaxAsync = (options) => new Promise((resolve, reject) => {
+        webapi.safeAjax({
+            ...options,
+            success: resolve,
+            error: reject,
+        });
+    });
+    try {
+        const url = `/_api/${_getPlural(entityName)}?$select=${select}${filter}`;
+        const res = await safeAjaxAsync({
+            type: "GET",
+            url,
+            contentType: "application/json",
+        });
+
+        const list = Array.isArray(res?.value) ? res.value : [];
+        if (list.length === 0) return null;
+
+        return list[0]?.[veFieldKey] ?? null;
+    } catch (err) {
+        console.error("getVERecordsByConditions failed:", err);
+        throw err;
+    }
+}
+
+
+/**
+ * WebApi Wrapper
+ */
+
+(function (webapi, $) {
+    function safeAjax(ajaxOptions) {
+        var deferredAjax = $.Deferred();
+
+        shell.getTokenDeferred().done(function (token) {
+            // add headers for AJAX
+            if (!ajaxOptions.headers) {
+                $.extend(ajaxOptions, {
+                    headers: {
+                        "__RequestVerificationToken": token
+                    }
+                });
+            } else {
+                ajaxOptions.headers["__RequestVerificationToken"] = token;
+            }
+            $.ajax(ajaxOptions)
+                .done(function (data, textStatus, jqXHR) {
+                    validateLoginSession(data, textStatus, jqXHR, deferredAjax.resolve);
+                }).fail(deferredAjax.reject); //AJAX
+        }).fail(function () {
+            deferredAjax.rejectWith(this, arguments); // on token failure pass the token AJAX and args
+        });
+
+        return deferredAjax.promise();
+    }
+    webapi.safeAjax = safeAjax;
+})(window.webapi = window.webapi || {}, jQuery)
+</script>
+
+<script>
+// to avoid any dependency from portal configuration used generated OOB data attr
+$('.entity-grid').on("loaded", function () {
+    const $subgrid = $(this);
+    const dataTableRef = $subgrid.data('refRel');
+    if (dataTableRef && dataTableRef.includes('msdyn_globalvendorcertificate')) {
+        const modal = $subgrid.children(".modal-delete");
+        const modalBtn = modal.find("button.primary");
+        $subgrid.find(".delete-link").each(function () {
+            const deleteBtn = $(this);
+            deleteBtn.on("click", async function () {
+                const parentRow = deleteBtn.closest("tr");
+                const guid = parentRow.data('id');
+                modalBtn.one("click", async function (evt) {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    if (guid) {
+                        const url = `/global-vendor-api/?certID=${guid}`;
+                        try {
+                            const data = await fetch(url, { headers: { Accept: "application/json" } });
+                            const [result] = await data.json();
+                            const veEntity = 'mserp_vrmvendorcertificationentity';
+                            const veFieldKey = 'mserp_vrmvendorcertificationentityid';
+                            const fields = ['mserp_certificationnumber', 'mserp_certificationtype', 'mserp_vendorpartynumber'];
+                            const queryFilter = [
+                                `mserp_certificationnumber eq '${result.certificationnumber}'`,
+                                `mserp_certificationtype eq '${result.typeName}'`,
+                                `mserp_vendorpartynumber eq '${result.partyID}'`
+                            ];
+                            const veRecordGUID = await getVERecordsByConditions("mserp_vrmvendorcertificationentity", fields, queryFilter, veFieldKey);
+                            const mappingManager = new MappingManager(SYNC_CONFIG_NAME, CRUD_ACTION.DELETE);
+                            await mappingManager.handleDelete(veRecordGUID, veEntity);
+                        } catch (error) {
+                            alert(error);
+                        }
+                    }
+                });
+            })
+        })
+    }
+})
+</script>

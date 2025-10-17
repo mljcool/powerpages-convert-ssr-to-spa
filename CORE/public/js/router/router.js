@@ -490,3 +490,4 @@ document.addEventListener("DOMContentLoaded", async function () {
 //         htmlPage: "<div>Profile cached</div>",
 //     });
 // });
+// "https://site-4yizo.powerappsportals.com/_portal/modal-form-template-path/a95fa527-1f4a-4589-876f-6ef8db36120d?entityformid=80fc1024-ca25-f011-8c4e-000d3a36a8b3&languagecode=1033&refentity=contact&refid=b71ddfa2-48a0-f011-bbd3-6045bd08972a&refrel=msdyn_vrmcontactportalaccessvendors_contact_contact"

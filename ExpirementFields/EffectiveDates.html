@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Epiremental</title>
+		<link href="https://fonts.cdnfonts.com/css/selawik" rel="stylesheet" />
+		<link href="../Common/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="../Common/css/font-awesome.BootstrapV5.bundle.css" rel="stylesheet" />
+		<link href="../Common/css/preform.BootstrapV5.bundle.css" rel="stylesheet" />
+
+		<!-- JQUERY -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+		<script src="../Common/js/xrm-adx/crmentityformview-datetime.js" type="text/javascript"></script>
+		<script src="../Common/js/xrm-adx/webform.js" rel="stylesheet"></script>
+
+		<style>
+			.container {
+				padding: 4rem 1rem;
+			}
+			.actions {
+				margin-top: 2rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+			<div id="ValidationSummaryEntityFormView" class="validation-summary alert alert-error alert-danger alert-block" role="alert" style="display: none"></div>
+			<div id="EntityFormControl">
+				<div id="EntityFormPanel" class="crmEntityFormView" onkeypress="javascript:return WebForm_FireDefaultButton(event, 'InsertButton')" role="form" aria-label="Basic Form">
+					<div id="EntityFormControl_EntityFormView" class="entity-form">
+						<input type="hidden" name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$EntityFormControl_EntityFormView_EntityName" id="EntityFormControl_EntityFormView_EntityName" value="msdyn_globalvendorcertificate" /><input
+							type="hidden"
+							name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$EntityFormControl_EntityFormView_EntityID"
+							id="EntityFormControl_EntityFormView_EntityID"
+						/><input type="hidden" name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$EntityFormControl_EntityFormView_EntityState" id="EntityFormControl_EntityFormView_EntityState" /><input
+							type="hidden"
+							name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$EntityFormControl_EntityFormView_EntityStatus"
+							id="EntityFormControl_EntityFormView_EntityStatus"
+						/><span
+							id="EntityFormControl_EntityFormView_EntityLayoutConfig"
+							data-form-layout='{"EntityName":"msdyn_globalvendorcertificate","Id":"00000000-0000-0000-0000-000000000000","SubmitActionLink":{"Modal":{},"Type":26,"Label":"Submit","Tooltip":"Submit","Enabled":true,"ButtonCssClass":"btn-primary","SuccessMessage":"","ActionIndex":-1,"ActionButtonAlignment":0,"ActionButtonStyle":0,"ActionButtonPlacement":1,"Confirmation":"","ShowModal":0,"FilterCriteriaId":"46eeb7ea-b9bd-4512-921c-1a74292694d3","BusyText":"Processing..."},"PreviousActionLink":{"Type":0,"Enabled":false,"ShowModal":0,"FilterCriteriaId":"d7154486-b60c-4ba8-a4fe-92210f606a18"},"NextActionLink":{"Type":0,"Enabled":false,"ShowModal":0,"FilterCriteriaId":"3908ef80-2b78-4478-9396-a7e1dd3393c8"},"CreateRelatedRecordActionLink":{"Modal":{},"Type":0,"Enabled":false,"ShowModal":0,"FilterCriteriaId":"b3a6a6a2-6c55-456e-83e9-853c36aa3177"},"TopFormActionLinks":[],"BottomFormActionLinks":[{"Modal":{},"Type":26,"Label":"Submit","Tooltip":"Submit","Enabled":true,"ButtonCssClass":"btn-primary","SuccessMessage":"","ActionIndex":-1,"ActionButtonAlignment":0,"ActionButtonStyle":0,"ActionButtonPlacement":1,"Confirmation":"","ShowModal":0,"FilterCriteriaId":"46eeb7ea-b9bd-4512-921c-1a74292694d3","BusyText":"Processing..."}],"EnableEntityPermissions":true,"LanguageCode":1033,"PortalName":"","EnableActions":false,"ShowActionButtonContainer":0,"ActionButtonDropDownLabel":"","TopContainerCssClass":"","BottomContainerCssClass":"","AutoGenerateSteps":false}'
+						></span>
+						<div id="ValidationSummaryEntityFormControl_EntityFormView" class="validation-summary alert alert-error alert-danger alert-block" role="alert" style="display: none"></div>
+						<div data-name="general_tab" class="tab clearfix">
+							<div class="tab-column" style="width: 100%">
+								<div>
+									<fieldset aria-label="General">
+										<table role="presentation" data-name="general_tab_section_general" class="section">
+											<colgroup>
+												<col style="width: 50%" />
+												<col style="width: 50%" />
+												<col />
+											</colgroup>
+											<tbody>
+												<tr>
+													<td colspan="1" rowspan="1" class="clearfix cell text form-control-cell">
+														<div class="table-info required">
+															<label for="msdyn_certificationnumber" id="msdyn_certificationnumber_label" class="field-label">Certification Number</label>
+															<div class="validators"><span id="RequiredFieldValidatormsdyn_certificationnumber" style="display: none">*</span><span id="MaximumLengthValidatormsdyn_certificationnumber" style="visibility: hidden">*</span></div>
+														</div>
+														<div class="control">
+															<input
+																name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$msdyn_certificationnumber"
+																type="text"
+																maxlength="20"
+																id="msdyn_certificationnumber"
+																class="text form-control"
+																onchange="setIsDirty(this.id);"
+																aria-required="true"
+																title="Certification Number is a required field."
+																aria-label="Certification Number"
+																onkeypress="javascript:return LengthError(this, event);"
+															/>
+														</div>
+													</td>
+													<td colspan="1" rowspan="1" class="clearfix cell lookup form-control-cell">
+														<div class="table-info required">
+															<label for="msdyn_globalvendorcertifyingorganization" id="msdyn_globalvendorcertifyingorganization_label" class="field-label">Certifying Organization</label>
+															<div class="validators"><span id="RequiredFieldValidatormsdyn_globalvendorcertifyingorganization" style="display: none">*</span></div>
+														</div>
+														<div class="control">
+															<select
+																name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$msdyn_globalvendorcertifyingorganization"
+																id="msdyn_globalvendorcertifyingorganization"
+																class="lookup form-control"
+																onchange="setIsDirty(this.id);"
+																required=""
+																aria-invalid="true"
+															>
+																<option value="" label="Select" aria-label="Select" class="dropdown-item">Select</option>
+																<option value="64f182bb-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">Amazon Web Services (AWS) Certification</option>
+																<option value="66f182bb-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">American Red Cross</option>
+																<option value="68f182bb-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">Certified Information Systems Security Professional (CISSP) – (ISC)²</option>
+																<option value="6af182bb-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">Cisco Certified Network Associate (CCNA) – Cisco</option>
+																<option value="6cf182bb-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">CompTIA</option>
+																<option value="6ef182bb-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">International Organization for Standardization (ISO)</option>
+																<option value="70f182bb-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">Lean Six Sigma Institute (LSSI)</option>
+																<option value="72f182bb-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">National Commission for Certifying Agencies (NCCA)</option>
+																<option value="74f182bb-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">Project Management Institute (PMI)</option>
+																<option value="76f182bb-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">SHRM (Society for Human Resource Management)</option>
+																<option value="78f182bb-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">Vendor Certifying Organization - 1</option></select
+															><input
+																name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$msdyn_globalvendorcertifyingorganization_entityname"
+																type="hidden"
+																id="msdyn_globalvendorcertifyingorganization_entityname"
+																value="msdyn_globalvendorcertifyingorganization"
+															/>
+														</div>
+													</td>
+													<td class="cell zero-cell"></td>
+												</tr>
+												<tr>
+													<td colspan="1" rowspan="1" class="clearfix cell lookup form-control-cell">
+														<div class="table-info required">
+															<label for="msdyn_type" id="msdyn_type_label" class="field-label">Certification Type&nbsp;</label>
+															<div class="validators"><span id="RequiredFieldValidatormsdyn_type" style="display: none">*</span></div>
+														</div>
+														<div class="control">
+															<select name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$msdyn_type" id="msdyn_type" class="lookup form-control" onchange="setIsDirty(this.id);" required="" aria-invalid="true">
+																<option value="" label="Select" aria-label="Select" class="dropdown-item">Select</option>
+																<option value="cfa34495-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">AS 9100</option>
+																<option value="d1a34495-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">AS 9110</option>
+																<option value="d3a34495-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">AS 9120</option>
+																<option value="d5a34495-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">EN 14399</option>
+																<option value="d7a34495-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">EN 14566</option>
+																<option value="d9a34495-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">EN 14592</option>
+																<option value="dba34495-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">EN 15048</option>
+																<option value="dda34495-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">IATF 16949</option>
+																<option value="dfa34495-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">ISO 13485</option>
+																<option value="e1a34495-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">ISO 14001</option>
+																<option value="e3a34495-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">ISO 45001</option>
+																<option value="e5a34495-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">ISO 9001</option>
+																<option value="e7a34495-b897-f011-bbd2-0022480a0ca1" class="dropdown-item">NFL 00-015</option></select
+															><input name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$msdyn_type_entityname" type="hidden" id="msdyn_type_entityname" value="msdyn_globalvendorcertificatetype" />
+														</div>
+													</td>
+													<td colspan="1" rowspan="1" class="clearfix cell datetime form-control-cell">
+														<div class="table-info">
+															<label for="msdyn_effectivedate_datepicker_description" id="msdyn_effectivedate_label" class="field-label">Effective Date</label>
+															<div class="validators"><span id="DateFormatValidatormsdyn_effectivedate" style="visibility: hidden">*</span></div>
+														</div>
+														<div class="control">
+															<input
+																name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$msdyn_effectivedate"
+																type="text"
+																id="msdyn_effectivedate"
+																class="datetime form-control"
+																data-ui="datetimepicker"
+																data-type="date"
+																data-attribute="msdyn_effectivedate"
+																data-behavior="TimeZoneIndependent"
+																style="display: none"
+															/>
+															<div class="input-append input-group datetimepicker" role="none">
+																<input
+																	type="text"
+																	data-date-format="M/D/YYYY"
+																	aria-describedby="msdyn_effectivedate_description"
+																	id="msdyn_effectivedate_datepicker_description"
+																	aria-labelledby="msdyn_effectivedate_label"
+																	onchange="setIsDirty(this.id);"
+																	class="form-control input-text-box"
+																	placeholder="M/D/YYYY"
+																	aria-required="true"
+																/><span tabindex="0" role="button" title="Choose a date" class="input-group-addon btn"><span data-date-icon="icon-calendar fa fa-calendar" data-time-icon="icon-time fa fa-clock" class="icon-calendar fa fa-calendar iconBorder"></span></span>
+															</div>
+														</div>
+													</td>
+													<td class="cell zero-cell"></td>
+												</tr>
+												<tr>
+													<td colspan="1" rowspan="1" class="clearfix cell datetime form-control-cell">
+														<div class="table-info required">
+															<label for="msdyn_expirationdate_datepicker_description" id="msdyn_expirationdate_label" class="field-label">Expiration Date</label>
+															<div class="validators"><span id="DateFormatValidatormsdyn_expirationdate" style="visibility: hidden">*</span><span id="RequiredFieldValidatormsdyn_expirationdate" style="display: none">*</span></div>
+														</div>
+														<div class="control">
+															<input
+																name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$msdyn_expirationdate"
+																type="text"
+																id="msdyn_expirationdate"
+																class="datetime form-control"
+																data-ui="datetimepicker"
+																data-type="date"
+																data-attribute="msdyn_expirationdate"
+																data-behavior="TimeZoneIndependent"
+																required=""
+																aria-invalid="true"
+																onfocus="validateRequiredField(this.id);"
+																style="display: none"
+															/>
+															<div class="input-append input-group datetimepicker" role="none">
+																<input
+																	type="text"
+																	data-date-format="M/D/YYYY"
+																	aria-describedby="msdyn_expirationdate_description"
+																	id="msdyn_expirationdate_datepicker_description"
+																	aria-labelledby="msdyn_expirationdate_label"
+																	onchange="setIsDirty(this.id);"
+																	class="form-control input-text-box"
+																	placeholder="M/D/YYYY"
+																	aria-required="true"
+																/><span tabindex="0" role="button" title="Choose a date" class="input-group-addon btn"><span data-date-icon="icon-calendar fa fa-calendar" data-time-icon="icon-time fa fa-clock" class="icon-calendar fa fa-calendar iconBorder"></span></span>
+															</div>
+														</div>
+													</td>
+													<td colspan="1" rowspan="1" class="clearfix cell text form-control-cell">
+														<div class="table-info">
+															<label for="msdyn_comment" id="msdyn_comment_label" class="field-label">Comment</label>
+															<div class="validators"><span id="MaximumLengthValidatormsdyn_comment" style="visibility: hidden">*</span></div>
+														</div>
+														<div class="control">
+															<input
+																name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$msdyn_comment"
+																type="text"
+																maxlength="60"
+																id="msdyn_comment"
+																class="text form-control"
+																onchange="setIsDirty(this.id);"
+																onkeypress="javascript:return LengthError(this, event);"
+															/>
+														</div>
+													</td>
+													<td class="cell zero-cell"></td>
+												</tr>
+												<tr>
+													<td colspan="1" rowspan="1" class="clearfix cell money form-control-cell">
+														<div class="table-info">
+															<label for="msdyn_liabilityamountbondlimit" id="msdyn_liabilityamountbondlimit_label" class="field-label">Liability amount/Bond limit</label>
+															<div class="validators"><span id="RangeValidatormsdyn_liabilityamountbondlimit" style="visibility: hidden">*</span></div>
+														</div>
+														<div class="control">
+															<div><input name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$msdyn_liabilityamountbondlimit" type="text" id="msdyn_liabilityamountbondlimit" class="text money form-control" onchange="setIsDirty(this.id);" /></div>
+														</div>
+													</td>
+													<td colspan="1" rowspan="1" class="clearfix cell lookup form-control-cell">
+														<div class="table-info">
+															<label for="transactioncurrencyid" id="transactioncurrencyid_label" class="field-label">Currency</label>
+															<div class="validators"></div>
+														</div>
+														<div class="control">
+															<select name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$transactioncurrencyid" id="transactioncurrencyid" class="lookup form-control" onchange="setIsDirty(this.id);">
+																<option value="" label="Select" aria-label="Select" class="dropdown-item">Select</option>
+																<option value="7692ca69-5c94-f011-b41c-0022480a19e9" class="dropdown-item">US Dollar</option></select
+															><input name="ctl00$ContentContainer$MainContent$EntityFormControl$EntityFormControl_EntityFormView$transactioncurrencyid_entityname" type="hidden" id="transactioncurrencyid_entityname" value="transactioncurrency" />
+														</div>
+													</td>
+													<td class="cell zero-cell"></td>
+												</tr>
+											</tbody>
+										</table>
+									</fieldset>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="actions">
+						<input
+							type="button"
+							name="ctl00$ContentContainer$MainContent$EntityFormControl$InsertButton"
+							value="Submit"
+							onclick="javascript:if(typeof entityFormClientValidate === 'function'){if(entityFormClientValidate()){if(typeof Page_ClientValidate === 'function'){if(Page_ClientValidate('')){clearIsDirty();disableButtons();this.value = 'Processing...';}}else{clearIsDirty();disableButtons();this.value = 'Processing...';}}else{return false;}}else{if(typeof Page_ClientValidate === 'function'){if(Page_ClientValidate('')){clearIsDirty();disableButtons();this.value = 'Processing...';}}else{clearIsDirty();disableButtons();this.value = 'Processing...';}};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$ContentContainer$MainContent$EntityFormControl$InsertButton&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, true))"
+							id="InsertButton"
+							title="Submit"
+							class="submit-btn btn btn-primary form-action-container-left"
+						/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+
+<script>
+$(function () {
+    const insertButton = document.getElementById('InsertButton');
+    const validate = () => {
+        const expirationDate = $('#msdyn_expirationdate_datepicker_description').val();
+        const effectiveDate = $('#msdyn_effectivedate_datepicker_description').val();
+        const hasDate = expirationDate && effectiveDate;
+        return hasDate && new Date(effectiveDate) >= new Date(expirationDate);
+    };
+    const showErrorMessage = () => {
+        const message = 'Effective date should be earlier than Expiration Date';
+        const getValidator = document.querySelectorAll('.datetime.form-control-cell > .table-info');
+        getValidator.forEach((element) => {
+            const validators = element.querySelector('.validators');
+            const errorContext = validators.querySelector('span');
+            validators.style.display = 'block';
+            errorContext.style.fontSize = '12px';
+            errorContext.style.visibility = 'visible';
+            errorContext.textContent = message;
+        });
+    };
+
+    insertButton.addEventListener('click', function (e) {
+        if (!validate()) return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        showErrorMessage();
+    }, true);
+});
+</script>

@@ -1,0 +1,420 @@
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1400px !important;
+  }
+}
+
+.common-workspace-wrapper {
+  padding: 1.5rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+  width: 100%;
+}
+
+.common-workspace-wrapper .action-header-workspace {
+  display: flex;
+  align-items: center;
+  padding: 0px 8px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: var(--msdyn-boxShadow);
+  border-radius: 4px;
+  justify-content: space-between;
+}
+
+.action-header-workspace .group-action {
+  display: flex;
+  gap: 5px;
+}
+
+.msdyn-btn-regular {
+  margin: 6px 0;
+
+  .txt-regular {
+    padding-top: 4px;
+  }
+}
+
+.actions,
+.form-custom-actions {
+  display: none !important;
+}
+
+.dialog-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 2rem 1rem;
+}
+
+.custom {
+  --dialog-width: 210px;
+  --dialog-height: fit-content;
+}
+
+.custom-unsave {
+  --dialog-width: fit-content;
+  --dialog-height: fit-content;
+}
+
+.saving-loading-label {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+#defaultDialog {
+  position: relative;
+  z-index: 999 !important;
+}
+
+.common-workspace-wrapper {
+  padding: 1.5rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+  width: 100%;
+
+  .txt-regular {
+    color: #242424;
+    font-size: 12px;
+    font-weight: 400;
+  }
+}
+
+.common-workspace-wrapper .action-header-workspace {
+  display: flex;
+  align-items: center;
+  padding: 0px 8px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: var(--msdyn-boxShadow);
+  border-radius: 4px;
+  justify-content: space-between;
+}
+
+.action-header-workspace .group-action {
+  display: flex;
+  gap: 5px;
+}
+
+.common-header-section {
+  padding: 2rem 1.6rem;
+  border-radius: 4px;
+  box-shadow: var(--msdyn-boxShadow);
+  background: white;
+
+  > h4 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #242424;
+  }
+}
+
+.icon-msdyn-disk-save {
+  > svg {
+    fill: #d492d8;
+  }
+}
+
+.msdyn-btn-regular {
+  margin: 6px 0;
+}
+
+.actions {
+  display: none;
+}
+
+.dialog-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 2rem 1rem;
+}
+
+.custom {
+  --dialog-width: 210px;
+  --dialog-height: fit-content;
+}
+
+.saving-loading-label {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+#defaultDialog {
+  position: relative;
+  z-index: 999 !important;
+}
+
+:root {
+  --bs-table-striped-bg: #fff;
+}
+
+.vendor-information-section {
+  background: #fafafa;
+
+  div[data-name="general_information_tab"] {
+    background: #fafafa;
+  }
+
+  .message.alert-success {
+    display: block;
+    background: white;
+    box-shadow: var(--msdyn-boxShadow);
+    border-left: 9px solid #b7d8b7;
+  }
+
+  div.message.success {
+    padding: 1rem 1.5rem !important;
+  }
+
+  .message.alert-success .btn-close {
+    background: none;
+  }
+
+  .message.alert-success .btn-close span {
+    color: rgba(0, 0, 0, 0.818);
+    font-size: 20px;
+    font-weight: 600;
+  }
+}
+
+.global-vendor-form {
+  padding: 0;
+
+  dropdown-menu.show {
+    z-index: 999;
+  }
+
+  fieldset {
+    box-shadow: var(--msdyn-boxShadow);
+    border-radius: 3px;
+    background: white;
+    padding: 20px 30px;
+    margin-top: 0.5rem;
+  }
+
+  fieldset {
+    table[data-name="general_tab_section_general"] {
+      border-spacing: 0 14px;
+      border-collapse: separate;
+    }
+
+    table[data-name="general_tab_section_approved_categories"] {
+      .view-grid {
+        table tbody tr:first-child td {
+          padding: 17px 0.4rem !important;
+        }
+      }
+    }
+
+    .control .input-group:not(.float-start) {
+      display: flex;
+      justify-content: space-between;
+      border: 1px solid #d1d1d1;
+      border-radius: 4px;
+      width: 90%;
+
+      .clearlookupfield {
+        display: none !important;
+      }
+    }
+  }
+
+  .table {
+    > tbody > tr {
+      background: white !important;
+    }
+  }
+
+  fieldset {
+    padding: 25px 30px;
+
+    .form-subgrid-heading {
+      display: none;
+    }
+
+    .fa.fa-edit {
+      display: none;
+    }
+
+    .fa-ban {
+      display: none;
+    }
+
+    .dropdown-item {
+      padding: 8px 10px;
+    }
+
+    .dropdown-item:hover {
+      padding: 8px 10px !important;
+    }
+
+    .view-grid {
+      min-height: 100px;
+
+      /* >table {
+                border-collapse: separate;
+                border-spacing: 0 10px;
+            } */
+
+      .fa-chevron-down::before {
+        position: relative;
+        content: "..." !important;
+        font-weight: 400;
+        font-size: 20px;
+        top: -4px;
+      }
+
+      table tbody > tr:nth-of-type(odd) {
+        background-color: white !important;
+        padding: 5px 0.4rem !important;
+      }
+
+      table tbody > tr {
+        background-color: white !important;
+      }
+
+      table thead {
+        border: 1px solid #fff;
+        border-bottom: 1px solid #eeeeee;
+      }
+
+      table thead > tr > th * {
+        color: #201f1e !important;
+        text-decoration: none;
+        white-space: nowrap;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 10px 0px;
+        display: block;
+      }
+
+      .table > :not(caption) > * > * {
+        padding: 5px 0.4rem !important;
+      }
+
+      table td {
+        border-bottom: 1px solid #eeeeee;
+        vertical-align: middle;
+        font-size: 14px;
+        font-weight: 400;
+      }
+
+      table > thead tr {
+        border-bottom: 1px solid rgba(209, 209, 209, 1);
+      }
+    }
+  }
+
+  .section-title h3 {
+    font-size: 19px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 1.2rem;
+  }
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #242424fa;
+    margin-bottom: 4px;
+  }
+
+  fieldset[aria-label="Contact Information"] {
+    .field-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #242424fa;
+      margin-bottom: 4px;
+    }
+  }
+
+  /* Action Header */
+
+  .grid-actions {
+    border-bottom: 1px solid #fff;
+  }
+
+  .grid-actions .create-action {
+    background: white;
+    border: #d1d1d1 1px solid;
+    border-radius: 4px;
+    display: flex;
+    gap: 9px;
+    padding: 9px 16px;
+    align-items: self-end;
+  }
+
+  .create-action > .txt-regular-action {
+    color: #242424;
+    font-weight: 600;
+    font-size: 14px;
+  }
+}
+
+/* Fluent modal */
+
+#warning-unsave {
+  z-index: 999;
+  position: relative;
+}
+
+.modal-fluent-content {
+  padding: 2rem 1rem;
+
+  .header-fluent-action {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  h3 {
+    white-space: nowrap;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  label {
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .close-unsave-warning {
+    cursor: pointer;
+  }
+}
+
+.modal-fluent-footer {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: end;
+  padding: 1rem;
+}
+
+.view-select .dropdown {
+  margin-left: -20px;
+}
+
+.view-select .dropdown a {
+  color: #333333;
+}
+
+.view-select .dropdown a .title {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+td[data-attribute="mserp_productcategoryhierarchyname"] a {
+  pointer-events: none;
+  color: black;
+}
+
+fieldset[aria-label="Hidden Fields"] {
+  display: none;
+}
